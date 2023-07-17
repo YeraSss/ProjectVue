@@ -2,15 +2,18 @@ import axios from "axios";
 import { Store, createStore } from "vuex";
 
 export default createStore({
-  state: {
-    isAuth: true,
-    categories: [],
-    subCategories: [],
-    reports: [],
-    groupIndicatorsWithId: [],
-    indicatorsWithId: [],
-    reportsOutList: [],
-    currentReportId: null,
+  state: () => {
+    return {
+      isAuth: true,
+      categories: [],
+      subCategories: [],
+      reports: [],
+      groupIndicatorsWithId: [],
+      indicatorsWithId: [],
+      reportsOutList: [],
+      currentReportId: null,
+      outputReportId: null,
+    };
   },
   getters: {},
   mutations: {
@@ -21,8 +24,8 @@ export default createStore({
       state.isAuth = false;
     },
     setCategories(state, data) {
-      const idNull = data.filter((item) => item.parent_id == null);
-      const idNumber = data.filter((item) => item.parent_id !== null);
+      const idNull = data.filter((item) => item.parent == null);
+      const idNumber = data.filter((item) => item.parent !== null);
       state.categories = idNull.map((category) => ({
         ...category,
         showSubCategory: false,
@@ -52,6 +55,45 @@ export default createStore({
     setCurrentReportId(state, id) {
       state.currentReportId = id;
     },
+    setOutputReportId(state, number) {
+      state.outputReportId = number;
+    },
+    setFoundCategory(state, obj) {
+      state.categories.forEach((item) => {
+        if (item.id === obj.id) {
+          item.showSubCategory = true;
+        }
+      });
+    },
+    setFoundSubCategory(state, obj) {
+      state.subCategories.forEach((item) => {
+        if (item.id === obj.id) {
+          item.showReports = true;
+          state.categories.forEach((category) => {
+            if (category.id === item.parent) {
+              category.showSubCategory = true;
+            }
+          });
+        }
+      });
+    },
+    setFoundReport(state, obj) {
+      state.reports.forEach((item) => {
+        if (item.id === obj.id) {
+          item.clicked = true;
+          state.subCategories.forEach((subCategory) => {
+            if (subCategory.id === item.category_report) {
+              subCategory.showReports = true;
+              state.categories.forEach((category) => {
+                if (category.id === subCategory.parent) {
+                  category.showSubCategory = true;
+                }
+              });
+            }
+          });
+        }
+      });
+    },
   },
   actions: {
     async fetchCategories({ commit }) {
@@ -60,7 +102,7 @@ export default createStore({
           "http://127.0.0.1:8000/api/reports-cat-list/",
           {
             headers: {
-              Authorization: "Token 7dba8eed905e532ddf257aa9a52099d0b69ba1dd",
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
             },
           }
         );
@@ -75,7 +117,7 @@ export default createStore({
           "http://127.0.0.1:8000/api/reports-list/",
           {
             headers: {
-              Authorization: "Token 7dba8eed905e532ddf257aa9a52099d0b69ba1dd",
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
             },
           }
         );
@@ -94,7 +136,7 @@ export default createStore({
               report: id,
             },
             headers: {
-              Authorization: "Token 7dba8eed905e532ddf257aa9a52099d0b69ba1dd",
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
             },
           }
         );
@@ -111,7 +153,7 @@ export default createStore({
           {
             params: { group: id },
             headers: {
-              Authorization: "Token 7dba8eed905e532ddf257aa9a52099d0b69ba1dd",
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
             },
           }
         );
@@ -128,7 +170,7 @@ export default createStore({
           {
             params: { report_id: id },
             headers: {
-              Authorization: "Token 7dba8eed905e532ddf257aa9a52099d0b69ba1dd",
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
             },
           }
         );

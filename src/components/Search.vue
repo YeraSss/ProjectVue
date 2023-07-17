@@ -10,9 +10,9 @@
       <li
         v-for="item in filteredItems"
         :key="item.id"
-        @click="selectItem(item.category_name)"
+        @click="selectItem(item.short_name)"
       >
-        {{ item.category_name }}
+        {{ item.short_name }}
       </li>
     </ul>
   </div>
@@ -27,8 +27,12 @@ export default {
   },
   computed: {
     filteredItems() {
-      return this.$store.state.categories.filter((item) =>
-        item.category_name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      return [
+        ...this.$store.state.categories,
+        ...this.$store.state.subCategories,
+        ...this.$store.state.reports,
+      ].filter((item) =>
+        item.short_name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     },
   },
@@ -36,6 +40,26 @@ export default {
     handleInput() {},
     selectItem(item) {
       this.searchTerm = item;
+      let foundObj = null;
+      foundObj = this.$store.state.categories.find(
+        (obj) => obj.short_name === item
+      );
+      if (foundObj) {
+        this.$store.commit("setFoundCategory", foundObj);
+      } else {
+        foundObj = this.$store.state.subCategories.find(
+          (obj) => obj.short_name === item
+        );
+        if (foundObj) {
+          this.$store.commit("setFoundSubCategory", foundObj);
+        } else {
+          foundObj = this.$store.state.reports.find(
+            (obj) => obj.short_name === item
+          );
+          this.$store.commit("setFoundReport", foundObj);
+          this.$emit("showMain", foundObj.id);
+        }
+      }
     },
   },
 };

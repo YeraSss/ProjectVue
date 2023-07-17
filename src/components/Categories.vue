@@ -7,25 +7,25 @@
       :class="{ active: category.showSubCategory }"
     >
       <div class="gri category" @click="toggleSubCategory(category)">
-        {{ category.category_name }}
+        {{ category.short_name }}
         <span
           class="arrow"
           :class="{ 'arrow-down': category.showSubCategory }"
         ></span>
       </div>
-      <div class="gri__subCategory" v-if="category.showSubCategory">
+      <div class="gri__subCategory" v-show="category.showSubCategory">
         <div
           v-for="subCategory in getSubCategories(category.id)"
           :key="subCategory.id"
         >
           <div class="gri sub__category" @click="toggleReports(subCategory)">
-            {{ subCategory.category_name }}
+            {{ subCategory.short_name }}
             <span
               class="arrow"
               :class="{ 'arrow-down': subCategory.showReports }"
             ></span>
           </div>
-          <div class="gri__report" v-if="subCategory.showReports">
+          <div class="gri__report" v-show="subCategory.showReports">
             <div
               class="gri reports"
               v-for="report in getReports(subCategory.id)"
@@ -41,7 +41,7 @@
                   : 'transparent',
               }"
             >
-              {{ report.report_title }}
+              {{ report.short_name }}
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default {
     getSubCategories() {
       return (parentId) =>
         this.$store.state.subCategories.filter(
-          (subCategory) => subCategory.parent_id === parentId
+          (subCategory) => subCategory.parent === parentId
         );
     },
     getReports() {

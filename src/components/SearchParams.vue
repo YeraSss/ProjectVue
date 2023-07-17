@@ -12,11 +12,11 @@
       </div>
       <div class="year select__block">
         <span>Год</span>
-        <input type="number" placeholder="Введите год" />
+        <input type="number" v-model="selectedYear" placeholder="Введите год" />
       </div>
       <div class="quater select__block">
         <span>Квартал</span>
-        <select :disabled="quaterDisabled">
+        <select :disabled="quaterDisabled" v-model="selectedQuarter">
           <option disabled selected value="">Выберите из списка</option>
           <option v-for="item in quaterArr" :key="item" :value="item">
             {{ item }}
@@ -25,20 +25,23 @@
       </div>
       <div class="month select__block">
         <span>Месяц</span>
-        <select :disabled="monthDisabled">
-          <option disabled selected value="">Выберите из списка</option>
+        <select :disabled="monthDisabled" v-model="selectedMonth">
+          <option selected disabled value="">Выберите из списка</option>
           <option v-for="item in monthArr" :key="item" :value="item">
             {{ item }}
           </option>
         </select>
       </div>
       <div class="apply__btn">
-        <button @click="$emit('showGrInd')">Применить</button>
+        <button @click="fetchOutputReportId">Применить</button>
       </div>
     </div>
     <div class="btns">
       <button class="upload__btn">Загрузить отчет</button>
-      <button class="download__btn" @click="fetchFile($store.state.currentReportId)">
+      <button
+        class="download__btn"
+        @click="fetchFile($store.state.currentReportId)"
+      >
         Скачать шаблон
       </button>
     </div>
@@ -50,7 +53,6 @@ import axios from "axios";
 export default {
   data() {
     return {
-      selectedPeriod: "",
       quaterDisabled: false,
       monthDisabled: false,
       periodArr: ["Годовой", "Ежеквартальный", "Ежемесячный"],
@@ -69,6 +71,10 @@ export default {
         "Nov",
         "Dec",
       ],
+      selectedPeriod: "",
+      selectedYear: "",
+      selectedQuarter: "",
+      selectedMonth: "",
     };
   },
   methods: {
@@ -87,15 +93,16 @@ export default {
     },
     async fetchFile(id) {
       await axios
-        .get("http://127.0.0.1:8000/api/reports-download/", {
-          params: {
-            report_id: id,
-          },
-          responseType: "blob",
-          headers: {
-            Authorization: "Token 7dba8eed905e532ddf257aa9a52099d0b69ba1dd",
-          },
-        })
+        .get(
+          "http://127.0.0.1:8000/api/reports-download/",
+          { report_id: id },
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
+            },
+          }
+        )
         .then((response) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
@@ -107,6 +114,35 @@ export default {
         .catch((e) => {
           alert("Download Failed");
           console.log(e);
+        });
+    },
+    fetchOutputReportId() {
+      this.$emit("showGrInd");
+      axios
+        .post(
+          "http://127.0.0.1:8000/api/reports-out-list/",
+          {
+            report_period: this.selectedPeriod,
+            report_year: this.selectedYear,
+            report_quarter: this.selectedQuarter || null,
+            report_month: this.selectedMonth || null,
+            report_status: "Черновик",
+            report_id: this.$store.state.currentReportId,
+          },
+          {
+            headers: {
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
+            },
+          }
+        )
+        .then((response) => {
+          this.$store.commit(
+            "setOutputReportId",
+            response.data.output_report_id
+          );
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <Search />
+    <Search @showMain="showMainBySearch" />
     <Categories @showMainPage="showMain" />
   </div>
 </template>
@@ -13,9 +13,15 @@ export default {
     Search,
     Categories,
   },
+  data() {
+    return {};
+  },
   methods: {
     showMain() {
       this.$emit("showMainPage");
+    },
+    showMainBySearch(id) {
+      this.$emit("showMain", id);
     },
   },
 };

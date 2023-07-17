@@ -2,7 +2,10 @@
   <div class="app">
     <Header />
     <div class="main__content">
-      <NavBar @showMainPage="showMainPage = true" />
+      <NavBar
+        @showMain="showMainBySearch"
+        @showMainPage="showMainPage = true"
+      />
       <MainPage v-if="showMainPage" />
     </div>
   </div>
@@ -29,7 +32,12 @@ export default {
       fetchReports: "fetchReports",
       fetchCategories: "fetchCategories",
       fetchReportsHistory: "fetchReportsHistory",
+      fetchReportsOutList: "fetchReportsOutList",
     }),
+    showMainBySearch(id) {
+      this.showMainPage = true;
+      this.fetchReportsOutList(id);
+    },
   },
   mounted() {
     this.fetchCategories();

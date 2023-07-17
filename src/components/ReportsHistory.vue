@@ -42,9 +42,11 @@ export default {
   methods: {
     async fetchHistoryFile(id) {
       await axios
-        .post("http://127.0.0.1:8000/api/reports-export/", null, {
+        .post("http://127.0.0.1:8000/api/reports-export/", {output_id: id}, {
           responseType: "blob",
-          params: { output_id: id },
+          headers: {
+            Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
+          },
         })
         .then((response) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));

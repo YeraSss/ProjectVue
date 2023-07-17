@@ -1,5 +1,5 @@
 <template>
-  <form class="form" @submit.prevent>
+  <form class="form" @submit.prevent="submitForm">
     <SearchParams @showGrInd="showGroupInd = true" />
     <GroupIndicators v-if="showGroupInd" @close="closeAll" />
   </form>
@@ -17,7 +17,10 @@ export default {
   methods: {
     closeAll() {
       this.showGroupInd = false;
-      this.$emit('close')
+      this.$emit("close");
+    },
+    submitForm() {
+      console.log("Form sent");
     },
   },
   components: {
