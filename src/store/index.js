@@ -2,21 +2,31 @@ import axios from "axios";
 import { Store, createStore } from "vuex";
 
 export default createStore({
-  state: () => {
-    return {
-      isAuth: true,
-      categories: [],
-      subCategories: [],
-      reports: [],
-      groupIndicatorsWithId: [],
-      indicatorsWithId: [],
-      reportsOutList: [],
-      currentReportId: null,
-      outputReportId: null,
-    };
-  },
+  state: () => ({
+    isAuth: true,
+    categories: [],
+    subCategories: [],
+    reports: [],
+    groupIndicatorsWithId: [],
+    indicatorsWithId: [],
+    reportsOutList: [],
+    fetchReportsOutList: null,
+    outputReportId: null,
+    inputValuesFromHistory: [],
+    arrayFromServer: [],
+    currentReportId: null,
+    responseFromPost: [],
+  }),
   getters: {},
   mutations: {
+    setResponseFromPost(state, response) {
+      state.responseFromPost = [...response];
+      console.log(state.responseFromPost);
+    },
+    setArrayFromServer(state, newArr) {
+      state.arrayFromServer = newArr;
+      console.log(state.arrayFromServer);
+    },
     logIn(state) {
       state.isAuth = true;
     },
@@ -93,6 +103,9 @@ export default createStore({
           });
         }
       });
+    },
+    setInputValuesFromHistory(state, array) {
+      state.inputValuesFromHistory = array;
     },
   },
   actions: {
@@ -178,6 +191,22 @@ export default createStore({
       } catch (e) {
         alert("Ошибка с журналом");
         console.log(e);
+      }
+    },
+    async fetchGroupIndicatorsByHistory({ commit }, id) {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/reports-idc-values/",
+          {
+            params: { output_id: id },
+            headers: {
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
+            },
+          }
+        );
+        commit("setInputValuesFromHistory", response.data);
+      } catch (e) {
+        alert("Не удалось получить файлы");
       }
     },
   },

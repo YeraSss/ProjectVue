@@ -30,6 +30,7 @@ header {
 .logo img {
   width: 249px;
   height: 60px;
+  cursor: pointer;
 }
 h1 {
   color: #ffffff;

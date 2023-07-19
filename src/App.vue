@@ -31,7 +31,6 @@ export default {
     ...mapActions({
       fetchReports: "fetchReports",
       fetchCategories: "fetchCategories",
-      fetchReportsHistory: "fetchReportsHistory",
       fetchReportsOutList: "fetchReportsOutList",
     }),
     showMainBySearch(id) {

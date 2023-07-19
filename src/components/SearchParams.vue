@@ -37,7 +37,11 @@
       </div>
     </div>
     <div class="btns">
-      <button class="upload__btn">Загрузить отчет</button>
+      <input type="file" ref="fileInput" @change="handleFileChange" />
+      <button @click="uploadFile($store.state.currentReportId)">
+        Загрузить
+      </button>
+
       <button
         class="download__btn"
         @click="fetchFile($store.state.currentReportId)"
@@ -53,23 +57,24 @@ import axios from "axios";
 export default {
   data() {
     return {
+      file: null,
       quaterDisabled: false,
       monthDisabled: false,
       periodArr: ["Годовой", "Ежеквартальный", "Ежемесячный"],
       quaterArr: ["I", "II", "III", "IV"],
       monthArr: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "June",
-        "Juli",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь",
       ],
       selectedPeriod: "",
       selectedYear: "",
@@ -78,6 +83,9 @@ export default {
     };
   },
   methods: {
+    handleFileChange() {
+      this.file = this.$refs.fileInput.files[0];
+    },
     changeOption(event) {
       this.selectedPeriod = event.target.value;
       if (this.selectedPeriod === "Ежеквартальный") {
@@ -95,7 +103,7 @@ export default {
       await axios
         .get(
           "http://127.0.0.1:8000/api/reports-download/",
-          { report_id: id },
+          { params: { report_id: id } },
           {
             responseType: "blob",
             headers: {
@@ -144,6 +152,25 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    async uploadFile(id) {
+      const formData = new FormData();
+      formData.append("file", this.file);
+      formData.append("report_id", id);
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/reports-import/",
+          formData,
+          {
+            headers: {
+              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
+            },
+          }
+        );
+        this.$store.commit("setResponseFromPost", response.data.indicators);
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 };

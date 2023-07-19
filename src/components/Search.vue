@@ -38,29 +38,29 @@ export default {
   },
   methods: {
     handleInput() {},
-    selectItem(item) {
-      this.searchTerm = item;
-      let foundObj = null;
-      foundObj = this.$store.state.categories.find(
-        (obj) => obj.short_name === item
-      );
-      if (foundObj) {
-        this.$store.commit("setFoundCategory", foundObj);
-      } else {
-        foundObj = this.$store.state.subCategories.find(
-          (obj) => obj.short_name === item
-        );
-        if (foundObj) {
-          this.$store.commit("setFoundSubCategory", foundObj);
-        } else {
-          foundObj = this.$store.state.reports.find(
-            (obj) => obj.short_name === item
-          );
-          this.$store.commit("setFoundReport", foundObj);
-          this.$emit("showMain", foundObj.id);
-        }
-      }
-    },
+    // selectItem(item) {
+    //   this.searchTerm = item;
+    //   let foundObj = null;
+    //   foundObj = this.$store.state.categories.find(
+    //     (obj) => obj.short_name === item
+    //   );
+    //   if (foundObj) {
+    //     this.$store.commit("setFoundCategory", foundObj);
+    //   } else {
+    //     foundObj = this.$store.state.subCategories.find(
+    //       (obj) => obj.short_name === item
+    //     );
+    //     if (foundObj) {
+    //       this.$store.commit("setFoundSubCategory", foundObj);
+    //     } else {
+    //       foundObj = this.$store.state.reports.find(
+    //         (obj) => obj.short_name === item
+    //       );
+    //       this.$store.commit("setFoundReport", foundObj);
+    //       this.$emit("showMain", foundObj.id);
+    //     }
+    //   }
+    // },
   },
 };
 </script>

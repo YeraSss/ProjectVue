@@ -11,8 +11,9 @@
         Создать отчет
       </button>
     </div>
-    <ReportsHistory v-if="showHistory" />
+    <ReportsHistory @showGP="showGroupIndicatorsByTable" v-if="showHistory" />
     <Form v-if="showGroupInd" @close="toggleHistory" />
+    <GroupIndicatorsByTable v-if="showGIbyTable" />
   </div>
 </template>
 
@@ -21,18 +22,21 @@ import Path from "@/components/Path.vue";
 import Title from "@/components/Title.vue";
 import ReportsHistory from "@/components/ReportsHistory.vue";
 import Form from "@/components/Form.vue";
+import GroupIndicatorsByTable from "@/components/GroupIndicatorsByTable.vue";
 export default {
   components: {
     Path,
     Title,
     ReportsHistory,
     Form,
+    GroupIndicatorsByTable,
   },
   data() {
     return {
       showHistory: true,
       showGroupInd: false,
       clicked: false,
+      showGIbyTable: false,
     };
   },
   methods: {
@@ -44,6 +48,11 @@ export default {
     toggleHistory() {
       (this.showGroupInd = false), (this.showHistory = true);
       this.clicked = false;
+    },
+    showGroupIndicatorsByTable() {
+      this.showHistory = false;
+      this.showGroupInd = false;
+      this.showGIbyTable = true;
     },
   },
 };

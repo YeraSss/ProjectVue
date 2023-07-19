@@ -1,31 +1,29 @@
 <template>
-  <div
-    class="group__indicators"
-    v-if="$store.state.groupIndicatorsWithId.length"
-  >
+  <div class="group__indicators">
     <div
-      v-for="group_indicator in $store.state.groupIndicatorsWithId"
-      :key="group_indicator.id"
       class="gp__item"
+      v-for="group__indicator in $store.state.groupIndicatorsWithId"
+      :key="group__indicator.id"
     >
       <ul>
-        <div class="gp__title" @click="toggleTable(group_indicator.id)">
-          {{ group_indicator.short_name }}
+        <div class="gp__title" @click="toggleTable(group__indicator.id)">
+          {{ group__indicator.short_name }}
         </div>
         <li
-          v-for="indicator in getObjectDataById(
-            group_indicator.id,
+          v-for="indicator in getObjectById(
+            group__indicator.id,
             groupIndicatorsArray
           )"
           :key="indicator.id"
         >
           <div
             class="indicators__items"
-            v-if="isTableVisible(group_indicator.id)"
+            v-if="isTableVisible(group__indicator.id)"
           >
             <div>{{ indicator.short_name }}</div>
             <input
               v-if="indicator.type_value !== 'list'"
+              disabled
               :type="getInputType(indicator.type_value)"
               :value="getInputValue(indicator.id)"
               @input="updateInputValue(indicator.id, $event.target.value)"
@@ -44,17 +42,12 @@
         </li>
       </ul>
     </div>
-    <div class="submit__btns">
-      <button class="submit__btn">Отправить</button>
-      <button @click="postData" class="save__btn">Сохранить</button>
-      <button @click="closeAll" class="cancel__btn">Отмена</button>
-    </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import axios from "axios";
+
 export default {
   data() {
     return {
@@ -72,16 +65,9 @@ export default {
     this.getInitialData();
   },
   methods: {
-    getInitialData() {
-      this.$store.state.responseFromPost.forEach((item) => {
-        this.inputValues[item.id] = item.indicator_value;
-      });
-    },
     ...mapActions({
       fetchIndicatorsWithId: "fetchIndicatorsWithId",
-      fetchReportsOutList: "fetchReportsOutList",
     }),
-
     addObj(array, newObject) {
       const index = array.findIndex((obj) => obj.id === newObject.id);
       if (index !== -1) {
@@ -108,41 +94,6 @@ export default {
     isTableVisible(groupId) {
       return this.openTables.includes(groupId);
     },
-    getInputValue(indicatorId) {
-      return this.inputValues[indicatorId] || "";
-    },
-    postData() {
-      const dataToPost = Object.entries(this.inputValues).map(
-        ([id, inputValue]) => ({
-          indicator_value: inputValue,
-          id: id,
-        })
-      );
-      axios
-        .post(
-          "http://127.0.0.1:8000/api/reports-idc-values/",
-          {
-            create: dataToPost,
-            output_report: {
-              report_status: "Черновик",
-              output_id: this.$store.state.outputReportId,
-            },
-          },
-          {
-            headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.statusText);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      this.closeAll();
-      this.fetchReportsOutList(this.$store.state.currentReportId);
-    },
 
     updateInputValue(indicatorId, value) {
       this.inputValues[indicatorId] = value;
@@ -150,12 +101,30 @@ export default {
     closeAll() {
       this.$emit("close");
     },
+    getInitialData() {
+      const array = [...this.$store.state.inputValuesFromHistory];
+      array.forEach((item) => {
+        this.inputValues[item.indicator] = item.indicator_value;
+      });
+    },
+  },
+  watch: {
+    $store: {
+      handler: "getInitialData",
+      deep: true,
+      immediate: true,
+    },
   },
   computed: {
-    getObjectDataById() {
+    getObjectById() {
       return (id, array) => {
         const foundObject = array.find((obj) => obj.id === id);
         return foundObject ? foundObject.data : [];
+      };
+    },
+    getInputValue() {
+      return (indicatorId) => {
+        return this.inputValues[indicatorId];
       };
     },
     getInputType() {
@@ -182,13 +151,6 @@ export default {
           return "text";
         }
       };
-    },
-  },
-  watch: {
-    $store: {
-      handler: "getInitialData",
-      deep: true,
-      immediate: true,
     },
   },
 };
