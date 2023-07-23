@@ -1,20 +1,26 @@
 <template>
   <header>
-    <div class="logo">
-      <img src="../assets/KMG_icon.svg" alt="KMG Icon" />
+    <div class="logo" @click="$router.push('/')">
+      <img src="../assets/KMG_icon.svg" alt="KMG Logo" />
     </div>
     <div class="title">
       <h1>Система ввода информации</h1>
     </div>
     <div class="btns">
-      <button class="btn">Войти</button>
+      <my-button @click="refreshData">Выйти</my-button>
     </div>
   </header>
 </template>
 
 <script>
 export default {
-  components: {},
+  methods: {
+    refreshData() {
+      this.$store.commit("setIsAuth", false);
+      this.$router.push("/Login");
+      this.$store.commit("setReportsState");
+    },
+  },
 };
 </script>
 

@@ -1,213 +1,256 @@
+import { createStore } from "vuex";
 import axios from "axios";
-import { Store, createStore } from "vuex";
 
 export default createStore({
   state: () => ({
-    isAuth: true,
+    isAuth: false,
+    token: "",
+    username: "",
+    password: "",
+    urlCategories: "http://127.0.0.1:8000/api/reports-cat-list/",
+    urlReports: "http://127.0.0.1:8000/api/reports-list/",
+    urlGroupIndicators: "http://127.0.0.1:8000/api/reports-gp-list/",
+    urlIndicators: "http://127.0.0.1:8000/api/reports-idc-list/",
+    urlOutList: "http://127.0.0.1:8000/api/reports-out-list/",
+    urlReportsIdcValues: "http://127.0.0.1:8000/api/reports-idc-values/",
+    urlDownloadFile: "http://127.0.0.1:8000/api/reports-download/",
+    urlUploadFile: "http://127.0.0.1:8000/api/reports-import/",
+    urlSaveData: "http://127.0.0.1:8000/api/reports-idc-values/",
+    urlLogin: "http://127.0.0.1:8000/api-token-auth/",
+    urlDownloadFromHistory: "http://127.0.0.1:8000/api/reports-export/",
+    urlToPatchData: "http://127.0.0.1:8000/api/reports-idc-values",
     categories: [],
     subCategories: [],
     reports: [],
-    groupIndicatorsWithId: [],
-    indicatorsWithId: [],
+    groupIndicators: [],
+    indicators: [],
     reportsOutList: [],
-    fetchReportsOutList: null,
-    outputReportId: null,
-    inputValuesFromHistory: [],
-    arrayFromServer: [],
+    reportsIdcValues: [],
     currentReportId: null,
-    responseFromPost: [],
+    outputReportId: null,
+    responseFromUploadFile: [],
+    isChangable: false,
+    foundName: {},
   }),
-  getters: {},
   mutations: {
-    setResponseFromPost(state, response) {
-      state.responseFromPost = [...response];
-      console.log(state.responseFromPost);
+    setUsername(state, newVal) {
+      state.username = newVal;
     },
-    setArrayFromServer(state, newArr) {
-      state.arrayFromServer = newArr;
-      console.log(state.arrayFromServer);
+    setPassword(state, newVal) {
+      state.password = newVal;
     },
-    logIn(state) {
-      state.isAuth = true;
+    setIsAuth(state, bool) {
+      state.isAuth = bool;
     },
-    logOut(state) {
-      state.isAuth = false;
+    setToken(state, newToken) {
+      state.token = `Token ${newToken}`;
     },
-    setCategories(state, data) {
-      const idNull = data.filter((item) => item.parent == null);
-      const idNumber = data.filter((item) => item.parent !== null);
-      state.categories = idNull.map((category) => ({
+    setCategories(state, newCategories) {
+      const categories = newCategories.filter((item) => item.parent == null);
+      const subcategories = newCategories.filter(
+        (item) => item.parent !== null
+      );
+      state.categories = categories.map((category) => ({
         ...category,
         showSubCategory: false,
       }));
-      state.subCategories = idNumber.map((category) => ({
+      state.subCategories = subcategories.map((category) => ({
         ...category,
         showReports: false,
       }));
-      state.categories = idNull;
-      state.subCategories = idNumber;
     },
-    setReports(state, reportsArray) {
-      state.reports = reportsArray.map((report) => ({
+    setReports(state, newReports) {
+      state.reports = newReports.map((report) => ({
         ...report,
         clicked: false,
       }));
     },
-    setGroupIndicatorsWithId(state, groupIndicatorsId) {
-      state.groupIndicatorsWithId = groupIndicatorsId;
-    },
-    setIndicatorsWithId(state, indicatorsArray) {
-      state.indicatorsWithId = indicatorsArray;
-    },
-    setReportsOutList(state, array) {
-      state.reportsOutList = array;
-    },
-    setCurrentReportId(state, id) {
-      state.currentReportId = id;
-    },
-    setOutputReportId(state, number) {
-      state.outputReportId = number;
-    },
-    setFoundCategory(state, obj) {
-      state.categories.forEach((item) => {
-        if (item.id === obj.id) {
-          item.showSubCategory = true;
+    setReportsClickToFalse(state, currentReport) {
+      state.reports.forEach((report) => {
+        if (report !== currentReport) {
+          report.clicked = false;
         }
       });
     },
-    setFoundSubCategory(state, obj) {
-      state.subCategories.forEach((item) => {
-        if (item.id === obj.id) {
-          item.showReports = true;
-          state.categories.forEach((category) => {
-            if (category.id === item.parent) {
-              category.showSubCategory = true;
-            }
-          });
-        }
-      });
-    },
-    setFoundReport(state, obj) {
+    setReportsClickToTrue(state, report) {
       state.reports.forEach((item) => {
-        if (item.id === obj.id) {
+        if (item.id === report.id) {
           item.clicked = true;
-          state.subCategories.forEach((subCategory) => {
-            if (subCategory.id === item.category_report) {
-              subCategory.showReports = true;
-              state.categories.forEach((category) => {
-                if (category.id === subCategory.parent) {
-                  category.showSubCategory = true;
-                }
-              });
-            }
-          });
         }
       });
     },
-    setInputValuesFromHistory(state, array) {
-      state.inputValuesFromHistory = array;
+    setGroupIndicators(state, newGroupIndicators) {
+      state.groupIndicators = [...newGroupIndicators];
+    },
+    setIndicators(state, newIndicators) {
+      state.indicators = [...newIndicators];
+    },
+    setReportsOutList(state, newReportsOutList) {
+      state.reportsOutList = [...newReportsOutList];
+    },
+    setReportsIdcValues(state, newReportsIdcValues) {
+      state.reportsIdcValues = [...newReportsIdcValues];
+    },
+    setCurrentReportId(state, newReportId) {
+      state.currentReportId = newReportId;
+    },
+    setOutputReportId(state, newVal) {
+      state.outputReportId = newVal;
+    },
+    setResponseFromUploadFile(state, newResponse) {
+      state.responseFromUploadFile = [...newResponse];
+    },
+    setIsChangable(state, bool) {
+      state.isChangable = bool;
+    },
+    setFoundName(state, newVal) {
+      state.foundName = newVal;
+    },
+    setReportsState(state) {
+      state.reports.forEach((report) => {
+        report.clicked = false;
+      });
+    },
+    setClickedKey(state, object) {
+      if (object.parent === null) {
+        state.categories.forEach((category) => {
+          if (category.id === object.id) {
+            category.showSubCategory = true;
+            return;
+          }
+        });
+      } else if (object.parent) {
+        state.subCategories.forEach((subCategory) => {
+          if (subCategory.id === object.id) {
+            subCategory.showReports = true;
+            state.categories.forEach((category) => {
+              if (subCategory.parent === category.id) {
+                category.showSubCategory = true;
+                return;
+              }
+            });
+            return;
+          }
+        });
+      } else if (object.category_report) {
+        state.reports.forEach((report) => {
+          if (report.id === object.id) {
+            report.clicked = true;
+            state.currentReportId = report.id;
+            state.subCategories.forEach((subCategory) => {
+              if (report.category_report === subCategory.id) {
+                subCategory.showReports = true;
+                state.categories.forEach((category) => {
+                  if (subCategory.parent === category.id) {
+                    category.showSubCategory = true;
+                    return;
+                  }
+                });
+              }
+            });
+            return;
+          }
+        });
+      }
     },
   },
   actions: {
-    async fetchCategories({ commit }) {
+    async fetchCategories({ commit, state }) {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/reports-cat-list/",
-          {
-            headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
-            },
-          }
-        );
+        const response = await axios.get(state.urlCategories, {
+          headers: {
+            Authorization: state.token,
+          },
+        });
         commit("setCategories", response.data.results);
       } catch (e) {
         alert("Ошибка с категориями");
       }
     },
-    async fetchReports({ commit }) {
+    async fetchReports({ commit, state }, id) {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/reports-list/",
-          {
-            headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
-            },
-          }
-        );
+        const response = await axios.get(state.urlReports, {
+          headers: {
+            Authorization: state.token,
+          },
+          params: {
+            category_id: id,
+          },
+        });
         commit("setReports", response.data.results);
       } catch (e) {
         alert("Не удалось получить Отчеты");
-        console.log(e);
       }
     },
-    async fetchGroupIndicatorsWithId({ commit }, id) {
+    async fetchGroupIndicators({ commit, state }, id) {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/reports-gp-list/",
-          {
-            params: {
-              report: id,
-            },
-            headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
-            },
-          }
-        );
-        commit("setGroupIndicatorsWithId", response.data.results);
+        const response = await axios.get(state.urlGroupIndicators, {
+          params: {
+            report: id,
+          },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setGroupIndicators", response.data.results);
       } catch (e) {
         alert("Ошибка ГП по ID");
-        console.log(e);
       }
     },
-    async fetchIndicatorsWithId({ commit }, id) {
+    async fetchIndicators({ commit, state }, id) {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/reports-idc-list/",
-          {
-            params: { group: id },
-            headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
-            },
-          }
-        );
-        commit("setIndicatorsWithId", response.data.results);
+        const response = await axios.get(state.urlIndicators, {
+          params: { group: id },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setIndicators", response.data.results);
       } catch (e) {
         alert("Не удалось получить показатели");
-        console.log(e);
       }
     },
-    async fetchReportsOutList({ commit }, id) {
+    async fetchReportsOutList({ commit, state }, id) {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/reports-out-list/",
-          {
-            params: { report_id: id },
-            headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
-            },
-          }
-        );
+        const response = await axios.get(state.urlOutList, {
+          params: { report_id: id },
+          headers: {
+            Authorization: state.token,
+          },
+        });
         commit("setReportsOutList", response.data.results);
+        console.log(response);
       } catch (e) {
         alert("Ошибка с журналом");
-        console.log(e);
       }
     },
-    async fetchGroupIndicatorsByHistory({ commit }, id) {
+    async fetchGroupIndicatorsByHistory({ commit, state }, id) {
+      commit("setOutputReportId", id);
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/reports-idc-values/",
-          {
-            params: { output_id: id },
-            headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
-            },
-          }
-        );
-        commit("setInputValuesFromHistory", response.data);
+        const response = await axios.get(state.urlReportsIdcValues, {
+          params: { output_id: id },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setReportsIdcValues", response.data);
       } catch (e) {
         alert("Не удалось получить файлы");
       }
+    },
+    async fetchToken({ state, commit }) {
+      await axios
+        .post(state.urlLogin, {
+          username: state.username,
+          password: state.password,
+        })
+        .then((response) => {
+          commit("setToken", response.data.token);
+          commit("setIsAuth", true);
+        })
+        .catch((error) => {
+          alert("Login error");
+        });
     },
   },
 });

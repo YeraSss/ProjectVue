@@ -30,14 +30,20 @@
             <td>{{ item.report_month }}</td>
             <td>{{ item.report_status }}</td>
             <td>
-              <button
+              <my-button
                 class="view__btn"
-                @click="fetchGroupIndicatorsByHistory(item.id); $emit('showGP')"
+                @click="
+                  fetchGroupIndicatorsByHistory(item.id);
+                  toggleTableByStatus(item.report_status);
+                  $router.push('/filled_tables');
+                "
               >
                 Просмотреть отчет
-              </button>
+              </my-button>
             </td>
-            <td><a href="#" @click="fetchHistoryFile(item.id)">Скачать</a></td>
+            <td>
+              <a href="#" @click="downloadHistoryFile(item.id)">Скачать</a>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -50,15 +56,25 @@ import axios from "axios";
 import { mapActions } from "vuex";
 export default {
   methods: {
-    async fetchHistoryFile(id) {
+    ...mapActions({
+      fetchGroupIndicatorsByHistory: "fetchGroupIndicatorsByHistory",
+    }),
+    toggleTableByStatus(status) {
+      if (status === "Черновик") {
+        this.$store.commit("setIsChangable", true);
+      } else {
+        this.$store.commit("setIsChangable", false);
+      }
+    },
+    async downloadHistoryFile(id) {
       await axios
         .post(
-          "http://127.0.0.1:8000/api/reports-export/",
+          this.$store.state.urlDownloadFromHistory,
           { output_id: id },
           {
             responseType: "blob",
             headers: {
-              Authorization: "Token 569d711db23ed25ac0226ccc2cf7c90bc238f1fb",
+              Authorization: this.$store.state.token,
             },
           }
         )
@@ -75,17 +91,11 @@ export default {
           console.log(e);
         });
     },
-    ...mapActions({
-      fetchGroupIndicatorsByHistory: "fetchGroupIndicatorsByHistory",
-    }),
   },
 };
 </script>
 
 <style scoped>
-.reports__history {
-  padding-left: 1%;
-}
 h2 {
   font-size: 21px;
   font-weight: 500;
