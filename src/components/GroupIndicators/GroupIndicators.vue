@@ -1,6 +1,5 @@
 <template>
   <div class="group__indicators" v-if="$store.state.groupIndicators.length">
-    <BreadCrumb />
     <div class="btns">
       <label for="file-upload" class="custom-file-upload">
         <i class="fas fa-cloud-upload-alt"></i>Загрузить файл
@@ -29,7 +28,16 @@
     >
       <ul>
         <div class="gp__title" @click="toggleTable(group_indicator.id)">
-          {{ group_indicator.short_name }}
+          <div class="short__name">
+            {{ group_indicator.short_name }}
+          </div>
+          <span
+            class="arrow"
+            :class="{
+              'arrow-down': isTableVisible(group_indicator.id),
+            }"
+          >
+          </span>
         </div>
         <li
           v-for="indicator in getObjectDataById(
@@ -44,6 +52,7 @@
           >
             <div class="indicator__name">{{ indicator.short_name }}</div>
             <my-input
+            class="my__inputs"
               v-if="indicator.type_value !== 'list'"
               :inputType="indicator.type_value"
               :value="getInputValue(indicator.id)"
@@ -65,9 +74,7 @@
 <script>
 import { mapActions } from "vuex";
 import axios from "axios";
-import BreadCrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 export default {
-  components: { BreadCrumb },
   data() {
     return {
       openTables: [],
@@ -105,7 +112,7 @@ export default {
             Authorization: this.$store.state.token,
           },
         });
-
+        console.log(response);
         const contentDisposition = response.headers["content-disposition"];
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = filenameRegex.exec(contentDisposition);
@@ -279,7 +286,7 @@ export default {
 
 <style scoped>
 .indicator__name {
-  font-size: 18px;
+  font-size: 14px;
 }
 .group__indicators {
   width: 99%;
@@ -303,22 +310,29 @@ li {
   margin-top: 1%;
   cursor: default;
 }
+.my__inputs {
+  border: 1px solid teal;
+  border-radius: 12px;
+}
 .indicators__items {
-  max-width: 80%;
+  max-width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 18px;
+  column-gap: 3%;
   padding: 0 5px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid black;
 }
 .indicators__items input {
   height: 36px;
   max-width: 20%;
 }
 .gp__title {
-  width: 80%;
-
+  width: 90%;
   padding: 10px 5px;
+  display: flex;
+  align-items: center;
 }
 .gp__title:hover {
   cursor: pointer;
@@ -361,7 +375,7 @@ li {
 .download__btn {
   background: #ecf4f9;
   border: 1px solid #cdcddf;
-  padding: 11px 22px;
+  padding: 10px 20px;
 }
 .custom-file-upload {
   display: inline-block;
@@ -369,7 +383,7 @@ li {
   color: #ffffff;
   border: 1px solid #4caf50;
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 12px;
 }
 
@@ -401,5 +415,22 @@ li {
   100% {
     opacity: 0;
   }
+}
+.arrow {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 8px;
+  border: solid #000000;
+  border-width: 0 1px 1px 0;
+  transform: rotate(-45deg);
+  transition: transform 0.3s ease;
+}
+.arrow-down {
+  transform: rotate(45deg);
+}
+.short__name {
+  width: 99.5%;
+  font-size: 16px;
 }
 </style>

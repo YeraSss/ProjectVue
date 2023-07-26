@@ -15,7 +15,6 @@ const routes = [
     component: MainPage,
     meta: {
       needAuth: true,
-      breadCrumb: "Главная",
     },
     children: [
       {
@@ -50,6 +49,11 @@ const routes = [
     path: "/registration",
     component: RegistrationPage,
   },
+  {
+    name: 'Admin',
+    path: '/admin',
+    component: () => ''
+  }
 ];
 
 const router = createRouter({

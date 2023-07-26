@@ -1,15 +1,8 @@
 <template>
   <div class="reports__history__page">
-    <Breadcrumb />
-    <my-button
-      class="create__report__btn"
-      @click="
-        $router.push('form_page');
-        $store.commit('setBreadCrumb', {
-          label: 'Создать отчет',
-          link: '/form_page',
-        });
-      "
+    <BreadCrumbs />
+    <Title />
+    <my-button class="create__report__btn" @click="$router.push('form_page')"
       >Создать новый отчет</my-button
     >
     <ReportsHistory />
@@ -18,11 +11,13 @@
 
 <script>
 import ReportsHistory from "@/components/ReportsHistory.vue";
-import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
+import Title from "@/components/InfoTitle/Title.vue";
+import BreadCrumbs from '@/components/BreadCrumbs/BreadCrumbs.vue';
 export default {
   components: {
     ReportsHistory,
-    Breadcrumb,
+    Title,
+    BreadCrumbs
   },
   data() {
     return {};

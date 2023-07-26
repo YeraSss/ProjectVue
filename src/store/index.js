@@ -19,6 +19,8 @@ export default createStore({
     urlLogin: "http://127.0.0.1:8000/api-token-auth/",
     urlDownloadFromHistory: "http://127.0.0.1:8000/api/reports-export/",
     urlToPatchData: "http://127.0.0.1:8000/api/reports-idc-values/",
+    urlAdmin: "http://127.0.0.1:8000/admin/",
+    isAdmin: true,
     categories: [],
     subCategories: [],
     reports: [],
@@ -31,7 +33,7 @@ export default createStore({
     responseFromUploadFile: [],
     isChangable: false,
     foundName: {},
-    breadCrumb: [{ label: "Главная", link: "/" }],
+    breadCrumbs: [],
   }),
   mutations: {
     setUsername(state, newVal) {
@@ -112,60 +114,59 @@ export default createStore({
         report.clicked = false;
       });
     },
-    setBreadCrumb(state, newPath) {
-      for (let i = 0; i < state.breadCrumb.length; i++) {
-        if (state.breadCrumb[i].label === newPath.label) {
-          return;
-        }
+    setBreadCrumbs(state, newCrumb) {
+      if (newCrumb.parent === null) {
+        state.breadCrumbs[0] = newCrumb;
+      } else if (newCrumb.parent) {
+        state.breadCrumbs[1] = newCrumb;
+      } else if (newCrumb.category_report) {
+        state.breadCrumbs[2] = newCrumb;
       }
-      state.breadCrumb.push(newPath);
-    },
-    removeBreadCrumb(state, obj) {
-      state.breadCrumb.splice(state.breadCrumb.indexOf(obj) + 1);
     },
     setClickedKey(state, object) {
       if (object.parent === null) {
-        state.categories.forEach((category) => {
-          if (category.id === object.id) {
-            category.showSubCategory = true;
-            return;
-          }
-        });
+        state.categories.forEach(
+          (category) => (category.showSubCategory = false)
+        );
+        const objectToFind = state.categories.find(
+          (category) => category.id === object.id
+        );
+        objectToFind.showSubCategory = true;
       } else if (object.parent) {
-        state.subCategories.forEach((subCategory) => {
-          if (subCategory.id === object.id) {
-            subCategory.showReports = true;
-            state.categories.forEach((category) => {
-              if (subCategory.parent === category.id) {
-                category.showSubCategory = true;
-                return;
-              }
-            });
-            return;
-          }
-        });
+        state.forEach((subCategory) => (subCategory.showReports = false));
+        const objectToFind = state.subCategories.find(
+          (subCategory) => subCategory.id === object.id
+        );
+        objectToFind.showReports = true;
+        const parentCategory = state.categories.find(
+          (category) => category.id === object.parent
+        );
+        parentCategory.showSubCategory = true;
       } else if (object.category_report) {
-        state.reports.forEach((report) => {
-          if (report.id === object.id) {
-            report.clicked = true;
-            state.currentReportId = report.id;
-            state.subCategories.forEach((subCategory) => {
-              if (report.category_report === subCategory.id) {
-                subCategory.showReports = true;
-                state.categories.forEach((category) => {
-                  if (subCategory.parent === category.id) {
-                    category.showSubCategory = true;
-                    return;
-                  }
-                });
-              }
-            });
-            return;
-          }
-        });
+        state.reports.forEach((report) => (report.clicked = false));
+        const objectToFind = state.reports.find(
+          (report) => report.id === object.id
+        );
+        objectToFind.clicked = true;
+        state.currentReportId = object.id;
+        const parentSubCategory = state.subCategories.find(
+          (subCategory) => subCategory.id === object.category_report
+        );
+        state.subCategories.forEach(
+          (subCategory) => (subCategory.showReports = false)
+        );
+        parentSubCategory.showReports = true;
+        const parentCategory = state.categories.find(
+          (category) => category.id === parentSubCategory.parent
+        );
+        state.categories.forEach(
+          (category) => (category.showSubCategory = false)
+        );
+        parentCategory.showSubCategory = true;
       }
     },
   },
+
   actions: {
     async fetchCategories({ commit, state }) {
       try {

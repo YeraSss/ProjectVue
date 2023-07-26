@@ -78,13 +78,17 @@ export default {
             },
           }
         );
+        console.log(response);
         const contentDisposition = response.headers["content-disposition"];
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = filenameRegex.exec(contentDisposition);
-        const serverFilename =
+        let serverFilename =
           matches && matches[1]
             ? matches[1].replace(/['"]/g, "")
             : "template.xlsx";
+        serverFilename = decodeURIComponent(serverFilename);
+        const transformedStr = serverFilename.replace(/^utf-\d+-\d+_/, "");
+        serverFilename = transformedStr.replace(/_/g, " ");
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;

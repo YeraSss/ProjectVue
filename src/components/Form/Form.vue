@@ -124,10 +124,6 @@ export default {
           console.log(error);
         });
       this.$router.push("group_indicators");
-      this.$store.commit("setBreadCrumb", {
-        label: "Групповые показатели",
-        link: "/group_indicators",
-      });
     },
   },
 };

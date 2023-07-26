@@ -34,10 +34,7 @@
                 toggleReport(report);
                 fetchReportsOutList(report.id);
                 $store.commit('setCurrentReportId', report.id);
-                $store.commit('setBreadCrumb', {
-                  label: report.short_name,
-                  link: '/reports_history',
-                });
+
                 $router.push('reports_history');
               "
               :style="{
@@ -65,14 +62,17 @@ export default {
     }),
     toggleSubCategory(category) {
       category.showSubCategory = !category.showSubCategory;
+      this.$store.commit("setBreadCrumbs", category);
     },
     toggleReports(subCategory) {
       subCategory.showReports = !subCategory.showReports;
+      this.$store.commit("setBreadCrumbs", subCategory);
     },
     toggleReport(report) {
       this.$store.commit("setReportsClickToTrue", report);
       this.$store.commit("setReportsClickToFalse", report);
       this.fetchGroupIndicators(report.id);
+      this.$store.commit("setBreadCrumbs", report);
     },
   },
   computed: {
