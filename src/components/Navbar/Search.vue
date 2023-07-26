@@ -39,6 +39,7 @@ export default {
   methods: {
     ...mapActions({
       fetchReportsOutList: "fetchReportsOutList",
+      fetchGroupIndicators: "fetchGroupIndicators",
     }),
     selectItem(item) {
       this.searchTerm = item;
@@ -64,6 +65,7 @@ export default {
       this.$store.commit("setClickedKey", foundObj);
       if (foundObj.category_report) {
         this.fetchReportsOutList(this.$store.state.currentReportId);
+        this.fetchGroupIndicators(this.$store.state.currentReportId);
         this.$router.push("reports_history");
       }
     },

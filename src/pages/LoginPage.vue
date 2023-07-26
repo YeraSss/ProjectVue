@@ -3,11 +3,11 @@
     <div class="autorization">
       <h3>Авторизация</h3>
       <form class="form" @click.prevent>
-        <my-input v-model="login" placeholder="Login" class="inputs" />
+        <my-input v-model="login" placeholder="Логин" class="inputs" />
         <my-input
           v-model="password"
           :inputType="'password'"
-          placeholder="Password"
+          placeholder="Пароль"
           class="inputs"
         />
         <button @click="loginUser" class="btn-grad">Войти</button>

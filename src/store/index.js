@@ -18,7 +18,7 @@ export default createStore({
     urlSaveData: "http://127.0.0.1:8000/api/reports-idc-values/",
     urlLogin: "http://127.0.0.1:8000/api-token-auth/",
     urlDownloadFromHistory: "http://127.0.0.1:8000/api/reports-export/",
-    urlToPatchData: "http://127.0.0.1:8000/api/reports-idc-values",
+    urlToPatchData: "http://127.0.0.1:8000/api/reports-idc-values/",
     categories: [],
     subCategories: [],
     reports: [],
@@ -31,6 +31,7 @@ export default createStore({
     responseFromUploadFile: [],
     isChangable: false,
     foundName: {},
+    breadCrumb: [{ label: "Главная", link: "/" }],
   }),
   mutations: {
     setUsername(state, newVal) {
@@ -111,6 +112,17 @@ export default createStore({
         report.clicked = false;
       });
     },
+    setBreadCrumb(state, newPath) {
+      for (let i = 0; i < state.breadCrumb.length; i++) {
+        if (state.breadCrumb[i].label === newPath.label) {
+          return;
+        }
+      }
+      state.breadCrumb.push(newPath);
+    },
+    removeBreadCrumb(state, obj) {
+      state.breadCrumb.splice(state.breadCrumb.indexOf(obj) + 1);
+    },
     setClickedKey(state, object) {
       if (object.parent === null) {
         state.categories.forEach((category) => {
@@ -167,14 +179,11 @@ export default createStore({
         alert("Ошибка с категориями");
       }
     },
-    async fetchReports({ commit, state }, id) {
+    async fetchReports({ commit, state }) {
       try {
         const response = await axios.get(state.urlReports, {
           headers: {
             Authorization: state.token,
-          },
-          params: {
-            category_id: id,
           },
         });
         commit("setReports", response.data.results);
@@ -219,7 +228,6 @@ export default createStore({
           },
         });
         commit("setReportsOutList", response.data.results);
-        console.log(response);
       } catch (e) {
         alert("Ошибка с журналом");
       }

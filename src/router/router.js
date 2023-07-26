@@ -5,7 +5,6 @@ import ReportHistoryPage from "@/pages/ReportHistoryPage.vue";
 import FormPage from "@/pages/FormPage.vue";
 import GroupIndicatorsPage from "@/pages/GroupIndicatorsPage.vue";
 import FilledTablesPage from "@/pages/FilledTablesPage.vue";
-
 import { createRouter, createWebHistory } from "vue-router";
 import { useStore } from "vuex";
 
@@ -16,6 +15,7 @@ const routes = [
     component: MainPage,
     meta: {
       needAuth: true,
+      breadCrumb: "Главная",
     },
     children: [
       {

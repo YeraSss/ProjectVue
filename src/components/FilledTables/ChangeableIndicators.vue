@@ -1,6 +1,11 @@
 <template>
   <div class="group__indicators">
-    <my-button class="back__btn" @click="$router.push('/reports_history')"
+    <my-button
+      class="back__btn"
+      @click="
+        $router.push('/reports_history');
+        clearAll();
+      "
       >Назад</my-button
     >
     <h2>Просмотр отчета:</h2>
@@ -36,11 +41,15 @@
         </li>
       </ul>
     </div>
-    <my-button @click="patchData">Save</my-button>
+    <div class="save__btn">
+      <my-button @click="patchData">Сохранить</my-button>
+      <my-button @click="sentData">Отправить</my-button>
+    </div>
   </div>
 </template>
 <script>
 import { mapActions } from "vuex";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -51,7 +60,6 @@ export default {
   },
   created() {
     this.getInitialData();
-    console.log(this.$store.state.outputReportId);
   },
   watch: {
     $store: {
@@ -126,6 +134,39 @@ export default {
           }
         )
         .then((response) => {
+          response
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.fetchReportsOutList(this.$store.state.currentReportId);
+      this.$router.push("/reports_history");
+      this.clearAll();
+    },
+    async sentData() {
+      const dataToPost = Object.entries(this.inputValues).map(
+        ([id, inputValue]) => ({
+          indicator_value: inputValue,
+          id: id,
+        })
+      );
+      await axios
+        .patch(
+          this.$store.state.urlToPatchData,
+          {
+            update: dataToPost,
+            output_report: {
+              report_status: "На согласовании",
+              output_id: this.$store.state.outputReportId,
+            },
+          },
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+            },
+          }
+        )
+        .then((response) => {
           console.log(response);
         })
         .catch((error) => {
@@ -133,7 +174,10 @@ export default {
         });
       this.fetchReportsOutList(this.$store.state.currentReportId);
       this.$router.push("/reports_history");
-      console.log(dataToPost);
+      this.clearAll();
+    },
+    clearAll() {
+      this.$store.commit("setReportsIdcValues", []);
     },
   },
   computed: {
@@ -204,5 +248,24 @@ li {
   padding: 8px 12px;
   border: none;
   color: #ffffff;
+}
+.save__btn {
+  padding-top: 2%;
+  display: flex;
+  column-gap: 25px;
+}
+.save__btn button {
+  width: 100px;
+  height: 32px;
+  background: #36c0ef;
+  padding: 8px 12px;
+  color: #ffffff;
+  border: none;
+}
+.save__btn button:last-child {
+  background: #337b53;
+}
+.save__btn button:last-child:hover {
+  background: teal;
 }
 </style>

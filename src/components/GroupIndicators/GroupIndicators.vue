@@ -1,5 +1,6 @@
 <template>
   <div class="group__indicators" v-if="$store.state.groupIndicators.length">
+    <BreadCrumb />
     <div class="btns">
       <label for="file-upload" class="custom-file-upload">
         <i class="fas fa-cloud-upload-alt"></i>Загрузить файл
@@ -54,7 +55,7 @@
       </ul>
     </div>
     <div class="submit__btns">
-      <my-button class="submit__btn">Отправить</my-button>
+      <my-button @click="sentData" class="submit__btn">Отправить</my-button>
       <my-button @click="saveData" class="save__btn">Сохранить</my-button>
       <my-button class="cancel__btn" @click="cancellAll">Отмена</my-button>
     </div>
@@ -64,7 +65,9 @@
 <script>
 import { mapActions } from "vuex";
 import axios from "axios";
+import BreadCrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 export default {
+  components: { BreadCrumb },
   data() {
     return {
       openTables: [],
@@ -94,30 +97,37 @@ export default {
       this.clearAll();
     },
     async downloadFile(id) {
-      await axios
-        .get(
-          this.$store.state.urlDownloadFile,
-          { params: { report_id: id } },
-          {
-            responseType: "blob",
-            headers: {
-              Authorization: this.$store.state.token,
-            },
-          }
-        )
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "template.xlsx");
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch((error) => {
-          alert("Download failed");
-          console.log(error);
+      try {
+        const response = await axios.get(this.$store.state.urlDownloadFile, {
+          params: { report_id: id },
+          responseType: "blob",
+          headers: {
+            Authorization: this.$store.state.token,
+          },
         });
+
+        const contentDisposition = response.headers["content-disposition"];
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(contentDisposition);
+        let serverFilename =
+          matches && matches[1]
+            ? matches[1].replace(/['"]/g, "")
+            : "template.xlsx";
+        serverFilename = decodeURIComponent(serverFilename);
+        const transformedStr = serverFilename.replace(/^utf-\d+-\d+_/, "");
+        serverFilename = transformedStr.replace(/_/g, " ");
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", serverFilename);
+        document.body.appendChild(link);
+        link.click();
+      } catch (error) {
+        alert("Не удалось выполнить скачивание файла.");
+        console.error(error);
+      }
     },
+
     clearAll() {
       this.$store.commit("setResponseFromUploadFile", []);
       this.inputValues = {};
@@ -149,12 +159,9 @@ export default {
           "setResponseFromUploadFile",
           response.data.indicators
         );
-
+        this.showSuccessMessage = true;
         setTimeout(() => {
-          this.showSuccessMessage = true;
-          setTimeout(() => {
-            this.showSuccessMessage = false;
-          }, 1000);
+          this.showSuccessMessage = false;
         }, 1000);
       } catch (e) {
         alert("Ошибка с загрузкой файла");
@@ -203,6 +210,39 @@ export default {
             create: dataToPost,
             output_report: {
               report_status: "Черновик",
+              output_id: this.$store.state.outputReportId,
+            },
+          },
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+            },
+          }
+        )
+        .then((response) => {
+          response;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.fetchReportsOutList(this.$store.state.currentReportId);
+      this.$router.push("/reports_history");
+      this.clearAll();
+    },
+    async sentData() {
+      const dataToPost = Object.entries(this.inputValues).map(
+        ([id, inputValue]) => ({
+          indicator_value: inputValue,
+          id: id,
+        })
+      );
+      await axios
+        .post(
+          this.$store.state.urlSaveData,
+          {
+            create: dataToPost,
+            output_report: {
+              report_status: "На согласовании",
               output_id: this.$store.state.outputReportId,
             },
           },
