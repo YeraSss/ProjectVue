@@ -28,7 +28,7 @@
 }
 
 .breadcrumbs li:not(:last-child):after {
-  content: "›";
+  content: "/";
   margin: 0 8px;
 }
 

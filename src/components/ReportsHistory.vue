@@ -78,7 +78,6 @@ export default {
             },
           }
         );
-        console.log(response);
         const contentDisposition = response.headers["content-disposition"];
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = filenameRegex.exec(contentDisposition);

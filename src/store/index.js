@@ -7,19 +7,29 @@ export default createStore({
     token: "",
     username: "",
     password: "",
-    urlCategories: "http://127.0.0.1:8000/api/reports-cat-list/",
-    urlReports: "http://127.0.0.1:8000/api/reports-list/",
-    urlGroupIndicators: "http://127.0.0.1:8000/api/reports-gp-list/",
-    urlIndicators: "http://127.0.0.1:8000/api/reports-idc-list/",
-    urlOutList: "http://127.0.0.1:8000/api/reports-out-list/",
-    urlReportsIdcValues: "http://127.0.0.1:8000/api/reports-idc-values/",
-    urlDownloadFile: "http://127.0.0.1:8000/api/reports-download/",
-    urlUploadFile: "http://127.0.0.1:8000/api/reports-import/",
-    urlSaveData: "http://127.0.0.1:8000/api/reports-idc-values/",
-    urlLogin: "http://127.0.0.1:8000/api-token-auth/",
-    urlDownloadFromHistory: "http://127.0.0.1:8000/api/reports-export/",
-    urlToPatchData: "http://127.0.0.1:8000/api/reports-idc-values/",
-    urlAdmin: "http://127.0.0.1:8000/admin/",
+    urlCategories: `${import.meta.env.VITE_API_BASE_URL}api/reports-cat-list/`,
+    urlReports: `${import.meta.env.VITE_API_BASE_URL}api/reports-list/`,
+    urlGroupIndicators: `${
+      import.meta.env.VITE_API_BASE_URL
+    }api/reports-gp-list/`,
+    urlIndicators: `${import.meta.env.VITE_API_BASE_URL}api/reports-idc-list/`,
+    urlOutList: `${import.meta.env.VITE_API_BASE_URL}api/reports-out-list/`,
+    urlReportsIdcValues: `${
+      import.meta.env.VITE_API_BASE_URL
+    }api/reports-idc-values/`,
+    urlDownloadFile: `${
+      import.meta.env.VITE_API_BASE_URL
+    }api/reports-download/`,
+    urlUploadFile: `${import.meta.env.VITE_API_BASE_URL}api/reports-import/`,
+    urlSaveData: `${import.meta.env.VITE_API_BASE_URL}api/reports-idc-values/`,
+    urlLogin: `${import.meta.env.VITE_API_BASE_URL}api-token-auth/`,
+    urlDownloadFromHistory: `${
+      import.meta.env.VITE_API_BASE_URL
+    }api/reports-export/`,
+    urlToPatchData: `${
+      import.meta.env.VITE_API_BASE_URL
+    }api/reports-idc-values/`,
+    urlAdmin: `${import.meta.env.VITE_API_BASE_URL}admin/`,
     isAdmin: true,
     categories: [],
     subCategories: [],
@@ -32,7 +42,6 @@ export default createStore({
     outputReportId: null,
     responseFromUploadFile: [],
     isChangable: false,
-    foundName: {},
     breadCrumbs: [],
   }),
   mutations: {
@@ -106,22 +115,23 @@ export default createStore({
     setIsChangable(state, bool) {
       state.isChangable = bool;
     },
-    setFoundName(state, newVal) {
-      state.foundName = newVal;
-    },
     setReportsState(state) {
       state.reports.forEach((report) => {
         report.clicked = false;
       });
     },
-    setBreadCrumbs(state, newCrumb) {
-      if (newCrumb.parent === null) {
-        state.breadCrumbs[0] = newCrumb;
-      } else if (newCrumb.parent) {
-        state.breadCrumbs[1] = newCrumb;
-      } else if (newCrumb.category_report) {
-        state.breadCrumbs[2] = newCrumb;
-      }
+    setBreadCrumbs(state, report) {
+      state.subCategories.forEach((subCategory) => {
+        if (subCategory.id === report.category_report) {
+          state.categories.forEach((category) => {
+            if (category.id === subCategory.parent) {
+              state.breadCrumbs[0] = category;
+              state.breadCrumbs[1] = subCategory;
+              state.breadCrumbs[2] = report;
+            }
+          });
+        }
+      });
     },
     setClickedKey(state, object) {
       if (object.parent === null) {
@@ -133,7 +143,9 @@ export default createStore({
         );
         objectToFind.showSubCategory = true;
       } else if (object.parent) {
-        state.forEach((subCategory) => (subCategory.showReports = false));
+        state.subCategories.forEach(
+          (subCategory) => (subCategory.showReports = false)
+        );
         const objectToFind = state.subCategories.find(
           (subCategory) => subCategory.id === object.id
         );
@@ -175,6 +187,7 @@ export default createStore({
             Authorization: state.token,
           },
         });
+        console.log(response);
         commit("setCategories", response.data.results);
       } catch (e) {
         alert("Ошибка с категориями");

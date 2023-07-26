@@ -34,7 +34,6 @@
                 toggleReport(report);
                 fetchReportsOutList(report.id);
                 $store.commit('setCurrentReportId', report.id);
-
                 $router.push('reports_history');
               "
               :style="{
@@ -57,22 +56,21 @@ import { mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions({
-      fetchGroupIndicators: "fetchGroupIndicators",
       fetchReportsOutList: "fetchReportsOutList",
+      fetchGroupIndicators: "fetchGroupIndicators",
     }),
     toggleSubCategory(category) {
       category.showSubCategory = !category.showSubCategory;
-      this.$store.commit("setBreadCrumbs", category);
+      console.log(category);
     },
     toggleReports(subCategory) {
       subCategory.showReports = !subCategory.showReports;
-      this.$store.commit("setBreadCrumbs", subCategory);
     },
     toggleReport(report) {
+      this.$store.commit("setBreadCrumbs", report);
       this.$store.commit("setReportsClickToTrue", report);
       this.$store.commit("setReportsClickToFalse", report);
       this.fetchGroupIndicators(report.id);
-      this.$store.commit("setBreadCrumbs", report);
     },
   },
   computed: {

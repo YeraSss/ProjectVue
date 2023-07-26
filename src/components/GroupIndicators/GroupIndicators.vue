@@ -52,7 +52,7 @@
           >
             <div class="indicator__name">{{ indicator.short_name }}</div>
             <my-input
-            class="my__inputs"
+              class="my__inputs"
               v-if="indicator.type_value !== 'list'"
               :inputType="indicator.type_value"
               :value="getInputValue(indicator.id)"
@@ -112,7 +112,6 @@ export default {
             Authorization: this.$store.state.token,
           },
         });
-        console.log(response);
         const contentDisposition = response.headers["content-disposition"];
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = filenameRegex.exec(contentDisposition);
@@ -260,7 +259,7 @@ export default {
           }
         )
         .then((response) => {
-          console.log(response.statusText);
+          response;
         })
         .catch((error) => {
           console.log(error);
