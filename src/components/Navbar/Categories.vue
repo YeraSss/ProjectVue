@@ -34,6 +34,10 @@
                 toggleReport(report);
                 fetchReportsOutList(report.id);
                 $store.commit('setCurrentReportId', report.id);
+                $store.commit('setBreadCrumb', {
+                  label: report.short_name,
+                  link: '/reports_history',
+                });
                 $router.push('reports_history');
               "
               :style="{
@@ -57,14 +61,12 @@ export default {
   methods: {
     ...mapActions({
       fetchGroupIndicators: "fetchGroupIndicators",
-      fetchReports: "fetchReports",
       fetchReportsOutList: "fetchReportsOutList",
     }),
     toggleSubCategory(category) {
       category.showSubCategory = !category.showSubCategory;
     },
     toggleReports(subCategory) {
-      this.fetchReports(subCategory.id);
       subCategory.showReports = !subCategory.showReports;
     },
     toggleReport(report) {

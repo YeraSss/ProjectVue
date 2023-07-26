@@ -22,10 +22,12 @@ export default {
   methods: {
     ...mapActions({
       fetchCategories: "fetchCategories",
+      fetchReports: "fetchReports",
     }),
   },
   mounted() {
     this.fetchCategories();
+    this.fetchReports();
   },
 };
 </script>

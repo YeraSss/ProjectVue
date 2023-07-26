@@ -12,6 +12,7 @@ export default {
 
 <style scoped>
 .btn {
+  display: block;
   padding: 5px 10px;
   background: none;
   border: 1px solid teal;

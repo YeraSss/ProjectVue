@@ -41,7 +41,7 @@
                 Просмотреть отчет
               </my-button>
             </td>
-            <td>
+            <td class="button__td">
               <a href="#" @click="downloadHistoryFile(item.id)">Скачать</a>
             </td>
           </tr>
@@ -67,8 +67,8 @@ export default {
       }
     },
     async downloadHistoryFile(id) {
-      await axios
-        .post(
+      try {
+        const response = await axios.post(
           this.$store.state.urlDownloadFromHistory,
           { output_id: id },
           {
@@ -77,19 +77,24 @@ export default {
               Authorization: this.$store.state.token,
             },
           }
-        )
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "template.xlsx");
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch((e) => {
-          alert("Ошибка при скачивании");
-          console.log(e);
-        });
+        );
+        const contentDisposition = response.headers["content-disposition"];
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(contentDisposition);
+        const serverFilename =
+          matches && matches[1]
+            ? matches[1].replace(/['"]/g, "")
+            : "template.xlsx";
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", serverFilename);
+        document.body.appendChild(link);
+        link.click();
+      } catch (error) {
+        alert("Ошибка при скачивании");
+        console.error(error);
+      }
     },
   },
 };

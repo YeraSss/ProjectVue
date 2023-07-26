@@ -99,7 +99,7 @@ export default {
     async fetchOutputReportId() {
       await axios
         .post(
-          "http://127.0.0.1:8000/api/reports-out-list/",
+          this.$store.state.urlOutList,
           {
             report_period: this.selectedPeriod,
             report_year: this.selectedYear,
@@ -119,12 +119,15 @@ export default {
             "setOutputReportId",
             response.data.output_report_id
           );
-          console.log("outputReportId created");
         })
         .catch((error) => {
           console.log(error);
         });
       this.$router.push("group_indicators");
+      this.$store.commit("setBreadCrumb", {
+        label: "Групповые показатели",
+        link: "/group_indicators",
+      });
     },
   },
 };
