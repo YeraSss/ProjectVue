@@ -61,7 +61,6 @@ export default {
     }),
     toggleSubCategory(category) {
       category.showSubCategory = !category.showSubCategory;
-      console.log(category);
     },
     toggleReports(subCategory) {
       subCategory.showReports = !subCategory.showReports;

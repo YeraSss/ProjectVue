@@ -5,7 +5,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  mounted() {
+    this.$store.commit("serUrls");
+  },
+};
 </script>
 
 <style>

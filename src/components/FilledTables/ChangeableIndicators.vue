@@ -207,47 +207,9 @@ h2 {
   padding-left: 0.5%;
   margin-bottom: 1.5%;
 }
-.group__indicators {
-  width: 99%;
-  display: flex;
-  flex-direction: column;
-}
 .gp__item {
   font-size: 18px;
   font-weight: 600;
-}
-ul,
-li {
-  padding: 0;
-  list-style-type: none;
-}
-
-li {
-  font-weight: 400;
-  font-size: 21px;
-  margin-bottom: 1%;
-  margin-top: 1%;
-  cursor: default;
-}
-.indicators__items {
-  max-width: 80%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 18px;
-  padding: 0 5px;
-}
-.indicators__items input {
-  height: 36px;
-  max-width: 20%;
-}
-.gp__title {
-  width: 80%;
-
-  padding: 10px 5px;
-}
-.gp__title:hover {
-  cursor: pointer;
-  background-color: #bbd7ea;
 }
 .back__btn {
   width: 100px;
@@ -276,18 +238,13 @@ li {
 .save__btn button:last-child:hover {
   background: teal;
 }
-.indicator__name {
-  font-size: 14px;
-}
+
 .group__indicators {
   width: 99%;
   display: flex;
   flex-direction: column;
 }
-.gp__item {
-  font-size: 18px;
-  font-weight: 600;
-}
+
 ul,
 li {
   padding: 0;
@@ -301,10 +258,7 @@ li {
   margin-top: 1%;
   cursor: default;
 }
-.my__inputs {
-  border: 1px solid teal;
-  border-radius: 12px;
-}
+
 .indicators__items {
   max-width: 90%;
   display: flex;
@@ -328,10 +282,6 @@ li {
 .gp__title:hover {
   cursor: pointer;
   background-color: #bbd7ea;
-}
-.save__btn {
-  background-color: #36c0ef;
-  color: #ffffff;
 }
 .arrow {
   display: inline-block;

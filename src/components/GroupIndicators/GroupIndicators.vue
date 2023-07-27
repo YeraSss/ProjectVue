@@ -310,8 +310,7 @@ li {
   cursor: default;
 }
 .my__inputs {
-  border: 1px solid teal;
-  border-radius: 12px;
+  border: 1px solid #000000;
 }
 .indicators__items {
   max-width: 90%;
@@ -320,7 +319,7 @@ li {
   align-items: center;
   column-gap: 3%;
   padding: 0 5px;
-  padding-bottom: 2px;
+  padding-bottom: 8px;
   border-bottom: 1px solid black;
 }
 .indicators__items input {

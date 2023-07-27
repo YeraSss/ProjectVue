@@ -7,29 +7,20 @@ export default createStore({
     token: "",
     username: "",
     password: "",
-    urlCategories: `${import.meta.env.VITE_API_BASE_URL}api/reports-cat-list/`,
-    urlReports: `${import.meta.env.VITE_API_BASE_URL}api/reports-list/`,
-    urlGroupIndicators: `${
-      import.meta.env.VITE_API_BASE_URL
-    }api/reports-gp-list/`,
-    urlIndicators: `${import.meta.env.VITE_API_BASE_URL}api/reports-idc-list/`,
-    urlOutList: `${import.meta.env.VITE_API_BASE_URL}api/reports-out-list/`,
-    urlReportsIdcValues: `${
-      import.meta.env.VITE_API_BASE_URL
-    }api/reports-idc-values/`,
-    urlDownloadFile: `${
-      import.meta.env.VITE_API_BASE_URL
-    }api/reports-download/`,
-    urlUploadFile: `${import.meta.env.VITE_API_BASE_URL}api/reports-import/`,
-    urlSaveData: `${import.meta.env.VITE_API_BASE_URL}api/reports-idc-values/`,
-    urlLogin: `${import.meta.env.VITE_API_BASE_URL}api-token-auth/`,
-    urlDownloadFromHistory: `${
-      import.meta.env.VITE_API_BASE_URL
-    }api/reports-export/`,
-    urlToPatchData: `${
-      import.meta.env.VITE_API_BASE_URL
-    }api/reports-idc-values/`,
-    urlAdmin: `${import.meta.env.VITE_API_BASE_URL}admin/`,
+    base_url: import.meta.env.VITE_API_BASE_URL,
+    urlCategories: `api/reports-cat-list/`,
+    urlReports: `api/reports-list/`,
+    urlGroupIndicators: `api/reports-gp-list/`,
+    urlIndicators: `api/reports-idc-list/`,
+    urlOutList: `api/reports-out-list/`,
+    urlReportsIdcValues: `api/reports-idc-values/`,
+    urlDownloadFile: `api/reports-download/`,
+    urlUploadFile: `api/reports-import/`,
+    urlSaveData: `api/reports-idc-values/`,
+    urlLogin: `api-token-auth/`,
+    urlDownloadFromHistory: `api/reports-export/`,
+    urlToPatchData: `api/reports-idc-values/`,
+    urlAdmin: `admin/`,
     isAdmin: true,
     categories: [],
     subCategories: [],
@@ -56,6 +47,22 @@ export default createStore({
     },
     setToken(state, newToken) {
       state.token = `Token ${newToken}`;
+    },
+    serUrls(state) {
+      state.urlCategories = state.base_url + state.urlCategories;
+      state.urlReports = state.base_url + state.urlReports;
+      state.urlGroupIndicators = state.base_url + state.urlGroupIndicators;
+      state.urlIndicators = state.base_url + state.urlIndicators;
+      state.urlOutList = state.base_url + state.urlOutList;
+      state.urlReportsIdcValues = state.base_url + state.urlReportsIdcValues;
+      state.urlDownloadFile = state.base_url + state.urlDownloadFile;
+      state.urlUploadFile = state.base_url + state.urlUploadFile;
+      state.urlSaveData = state.base_url + state.urlSaveData;
+      state.urlLogin = state.base_url + state.urlLogin;
+      state.urlDownloadFromHistory =
+        state.base_url + state.urlDownloadFromHistory;
+      state.urlToPatchData = state.base_url + state.urlToPatchData;
+      state.urlAdmin = state.base_url + state.urlAdmin;
     },
     setCategories(state, newCategories) {
       const categories = newCategories.filter((item) => item.parent == null);
@@ -187,7 +194,6 @@ export default createStore({
             Authorization: state.token,
           },
         });
-        console.log(response);
         commit("setCategories", response.data.results);
       } catch (e) {
         alert("Ошибка с категориями");

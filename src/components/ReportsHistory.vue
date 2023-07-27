@@ -48,6 +48,9 @@
         </tbody>
       </table>
     </div>
+    <div class="empty__text" v-if="$store.state.reportsOutList.length === 0">
+      <h2>Жунал отчетов пуст</h2>
+    </div>
   </div>
 </template>
 
@@ -133,6 +136,7 @@ tr {
 .view__btn {
   width: 90%;
   height: 34px;
+  margin: auto;
   background-color: #36c0ef;
   border: none;
   border-radius: 5px;
@@ -140,5 +144,14 @@ tr {
   cursor: pointer;
   font-weight: 400;
   padding: 2px;
+}
+.empty__text {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding-top: 1%;
+}
+.empty__text h2 {
+  color: red;
 }
 </style>
