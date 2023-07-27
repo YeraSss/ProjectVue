@@ -64,6 +64,7 @@ export default {
     },
     toggleReports(subCategory) {
       subCategory.showReports = !subCategory.showReports;
+      
     },
     toggleReport(report) {
       this.$store.commit("setBreadCrumbs", report);

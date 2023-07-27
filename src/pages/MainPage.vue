@@ -4,6 +4,7 @@
     <div class="main__page__content">
       <NavBar />
       <div class="content">
+        <FreeForm />
         <router-view />
       </div>
     </div>
@@ -13,11 +14,13 @@
 <script>
 import NavBar from "@/components/Navbar/NavBar.vue";
 import Header from "@/components/Header.vue";
+import FreeForm from "@/components/FreeForm/FreeForm.vue";
 import { mapActions } from "vuex";
 export default {
   components: {
     Header,
     NavBar,
+    FreeForm,
   },
   methods: {
     ...mapActions({
