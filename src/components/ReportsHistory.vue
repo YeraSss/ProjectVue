@@ -48,6 +48,9 @@
         </tbody>
       </table>
     </div>
+    <div class="empty__text" v-if="$store.state.reportsOutList.length === 0">
+      <h2>Жунал отчетов пуст</h2>
+    </div>
   </div>
 </template>
 
@@ -81,10 +84,13 @@ export default {
         const contentDisposition = response.headers["content-disposition"];
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = filenameRegex.exec(contentDisposition);
-        const serverFilename =
+        let serverFilename =
           matches && matches[1]
             ? matches[1].replace(/['"]/g, "")
             : "template.xlsx";
+        serverFilename = decodeURIComponent(serverFilename);
+        const transformedStr = serverFilename.replace(/^utf-\d+-\d+_/, "");
+        serverFilename = transformedStr.replace(/_/g, " ");
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -130,6 +136,7 @@ tr {
 .view__btn {
   width: 90%;
   height: 34px;
+  margin: auto;
   background-color: #36c0ef;
   border: none;
   border-radius: 5px;
@@ -137,5 +144,14 @@ tr {
   cursor: pointer;
   font-weight: 400;
   padding: 2px;
+}
+.empty__text {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding-top: 1%;
+}
+.empty__text h2 {
+  color: red;
 }
 </style>

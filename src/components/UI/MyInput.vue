@@ -57,6 +57,7 @@ export default {
   width: 100%;
   border: 1px solid black;
   padding: 5px 10px;
+  outline: none;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

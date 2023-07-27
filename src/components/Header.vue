@@ -7,6 +7,9 @@
       <h1>Система ввода информации</h1>
     </div>
     <div class="btns">
+      <my-button @click="redirectToExternalSite" v-if="$store.state.isAdmin"
+        >Администрация</my-button
+      >
       <my-button @click="refreshData">Выйти</my-button>
     </div>
   </header>
@@ -19,6 +22,9 @@ export default {
       this.$store.commit("setIsAuth", false);
       this.$router.push("/Login");
       this.$store.commit("setReportsState");
+    },
+    redirectToExternalSite() {
+      window.location.href = this.$store.state.urlAdmin;
     },
   },
 };

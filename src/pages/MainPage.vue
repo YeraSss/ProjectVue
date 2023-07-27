@@ -26,8 +26,10 @@ export default {
     }),
   },
   mounted() {
-    this.fetchCategories();
-    this.fetchReports();
+    if (this.$store.state.isAuth) {
+      this.fetchCategories();
+      this.fetchReports();
+    }
   },
 };
 </script>

@@ -35,14 +35,11 @@ export default {
   methods: {
     ...mapActions({
       fetchToken: "fetchToken",
-      fetchCategories: "fetchCategories",
-      fetchReports: "fetchReports",
     }),
     async loginUser() {
       this.$store.commit("setUsername", this.login);
       this.$store.commit("setPassword", this.password);
       await this.fetchToken();
-      this.fetchCategories();
       this.$router.push("/");
     },
   },
@@ -71,6 +68,7 @@ export default {
 .inputs {
   width: 300px;
   border: none;
+  border-radius: 0;
   background: white;
   border-bottom: 1px solid black;
   outline: none;

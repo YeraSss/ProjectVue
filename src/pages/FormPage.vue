@@ -1,17 +1,17 @@
 <template>
   <div class="form__page">
-    <Breadcrumb />
+    <Title />
     <Form />
   </div>
 </template>
 
 <script>
 import Form from "@/components/Form/Form.vue";
-import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
+import Title from "@/components/InfoTitle/Title.vue";
 export default {
   components: {
     Form,
-    Breadcrumb,
+    Title,
   },
 };
 </script>

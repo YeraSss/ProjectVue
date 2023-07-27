@@ -34,10 +34,6 @@
                 toggleReport(report);
                 fetchReportsOutList(report.id);
                 $store.commit('setCurrentReportId', report.id);
-                $store.commit('setBreadCrumb', {
-                  label: report.short_name,
-                  link: '/reports_history',
-                });
                 $router.push('reports_history');
               "
               :style="{
@@ -60,8 +56,8 @@ import { mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions({
-      fetchGroupIndicators: "fetchGroupIndicators",
       fetchReportsOutList: "fetchReportsOutList",
+      fetchGroupIndicators: "fetchGroupIndicators",
     }),
     toggleSubCategory(category) {
       category.showSubCategory = !category.showSubCategory;
@@ -70,6 +66,7 @@ export default {
       subCategory.showReports = !subCategory.showReports;
     },
     toggleReport(report) {
+      this.$store.commit("setBreadCrumbs", report);
       this.$store.commit("setReportsClickToTrue", report);
       this.$store.commit("setReportsClickToFalse", report);
       this.fetchGroupIndicators(report.id);

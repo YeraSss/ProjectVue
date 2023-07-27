@@ -48,25 +48,25 @@ export default {
         (obj) => obj.short_name === item
       );
       if (foundObj) {
-        this.$store.commit("setFoundName", foundObj);
+        this.$store.commit("setClickedKey", foundObj);
       } else {
         foundObj = this.$store.state.subCategories.find(
           (obj) => obj.short_name === item
         );
         if (foundObj) {
-          this.$store.commit("setFoundName", foundObj);
+          this.$store.commit("setClickedKey", foundObj);
         } else {
           foundObj = this.$store.state.reports.find(
             (obj) => obj.short_name === item
           );
-          this.$store.commit("setFoundName", foundObj);
+          this.$store.commit("setClickedKey", foundObj);
         }
       }
-      this.$store.commit("setClickedKey", foundObj);
       if (foundObj.category_report) {
-        this.fetchReportsOutList(this.$store.state.currentReportId);
-        this.fetchGroupIndicators(this.$store.state.currentReportId);
+        this.fetchReportsOutList(foundObj.id);
+        this.fetchGroupIndicators(foundObj.id);
         this.$router.push("reports_history");
+        this.$store.commit("setBreadCrumbs", foundObj);
       }
     },
   },

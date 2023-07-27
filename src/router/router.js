@@ -15,7 +15,6 @@ const routes = [
     component: MainPage,
     meta: {
       needAuth: true,
-      breadCrumb: "Главная",
     },
     children: [
       {

@@ -16,7 +16,15 @@
     >
       <ul>
         <div class="gp__title" @click="toggleTable(group_indicator.id)">
-          {{ group_indicator.short_name }}
+          <div class="short__name">
+            {{ group_indicator.short_name }}
+          </div>
+          <span
+            class="arrow"
+            :class="{
+              'arrow-down': isTableVisible(group_indicator.id),
+            }"
+          ></span>
         </div>
         <li
           v-for="indicator in getObjectDataById(
@@ -134,7 +142,7 @@ export default {
           }
         )
         .then((response) => {
-          response
+          response;
         })
         .catch((error) => {
           console.log(error);
@@ -167,7 +175,7 @@ export default {
           }
         )
         .then((response) => {
-          console.log(response);
+          response;
         })
         .catch((error) => {
           console.log(error);
@@ -199,47 +207,9 @@ h2 {
   padding-left: 0.5%;
   margin-bottom: 1.5%;
 }
-.group__indicators {
-  width: 99%;
-  display: flex;
-  flex-direction: column;
-}
 .gp__item {
   font-size: 18px;
   font-weight: 600;
-}
-ul,
-li {
-  padding: 0;
-  list-style-type: none;
-}
-
-li {
-  font-weight: 400;
-  font-size: 21px;
-  margin-bottom: 1%;
-  margin-top: 1%;
-  cursor: default;
-}
-.indicators__items {
-  max-width: 80%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 18px;
-  padding: 0 5px;
-}
-.indicators__items input {
-  height: 36px;
-  max-width: 20%;
-}
-.gp__title {
-  width: 80%;
-
-  padding: 10px 5px;
-}
-.gp__title:hover {
-  cursor: pointer;
-  background-color: #bbd7ea;
 }
 .back__btn {
   width: 100px;
@@ -267,5 +237,67 @@ li {
 }
 .save__btn button:last-child:hover {
   background: teal;
+}
+
+.group__indicators {
+  width: 99%;
+  display: flex;
+  flex-direction: column;
+}
+
+ul,
+li {
+  padding: 0;
+  list-style-type: none;
+}
+
+li {
+  font-weight: 400;
+  font-size: 21px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  cursor: default;
+}
+
+.indicators__items {
+  max-width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 3%;
+  padding: 0 5px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid black;
+}
+.indicators__items input {
+  height: 36px;
+  max-width: 20%;
+}
+.gp__title {
+  width: 90%;
+  padding: 10px 5px;
+  display: flex;
+  align-items: center;
+}
+.gp__title:hover {
+  cursor: pointer;
+  background-color: #bbd7ea;
+}
+.arrow {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 8px;
+  border: solid #000000;
+  border-width: 0 1px 1px 0;
+  transform: rotate(-45deg);
+  transition: transform 0.3s ease;
+}
+.arrow-down {
+  transform: rotate(45deg);
+}
+.short__name {
+  width: 99.5%;
+  font-size: 16px;
 }
 </style>
