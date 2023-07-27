@@ -4,7 +4,7 @@
     <div class="main__page__content">
       <NavBar />
       <div class="content">
-        <FreeForm />
+        
         <router-view />
       </div>
     </div>
