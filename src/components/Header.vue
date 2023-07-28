@@ -20,6 +20,7 @@ export default {
   methods: {
     refreshData() {
       this.$store.commit("setIsAuth", false);
+      this.$store.commit("setToken", null);
       this.$router.push("/Login");
       this.$store.commit("setReportsState");
     },

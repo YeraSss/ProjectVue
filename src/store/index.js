@@ -46,7 +46,11 @@ export default createStore({
       state.isAuth = bool;
     },
     setToken(state, newToken) {
-      state.token = `Token ${newToken}`;
+      if (newToken === null || newToken[0] === "T") {
+        state.token = newToken;
+      } else {
+        state.token = `Token ${newToken}`;
+      }
     },
     serUrls(state) {
       state.urlCategories = state.base_url + state.urlCategories;

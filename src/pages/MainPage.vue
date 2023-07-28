@@ -4,7 +4,6 @@
     <div class="main__page__content">
       <NavBar />
       <div class="content">
-        
         <router-view />
       </div>
     </div>
