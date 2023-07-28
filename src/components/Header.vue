@@ -23,6 +23,7 @@ export default {
       this.$store.commit("setToken", null);
       this.$router.push("/Login");
       this.$store.commit("setReportsState");
+      localStorage.clear();
     },
     redirectToExternalSite() {
       window.location.href = this.$store.state.urlAdmin;

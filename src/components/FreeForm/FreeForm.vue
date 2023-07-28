@@ -1,18 +1,27 @@
 <template>
-  <div class="free__form">
-    <div class="btns">
-      <my-button>Загрузить</my-button>
-      <my-button>Скачать</my-button>
-    </div>
+  <div class="free__form" v-if="$store.state.groupIndicators.length">
     <div class="content">
       <ul>
-        <div class="content__title" @click="toggleTextArea">
-          <div class="short__name">Title</div>
-          <span class="arrow"> arrow </span>
+        <div class="content__title">
+          <div class="short__name">
+            {{ $store.state.groupIndicators[0].short_name }}
+          </div>
         </div>
-        <li v-show="showTextArea">
-          <textarea name="freetext" id="freetext" cols="160" rows="15">
+        <li>
+          <textarea v-model="text" name="freetext" id="freetext" cols="100" rows="15">
           </textarea>
+        </li>
+        <li>
+          <div class="input-wrapper">
+            <my-input
+              class="my__input"
+              inputType="file"
+              @change="handleFileChange"
+              ref="fileInput"
+            ></my-input>
+            <button @click="openFilePicker">Выбрать файл</button>
+            <div v-if="selectedFile">{{ selectedFile.name }}</div>
+          </div>
         </li>
       </ul>
       <div class="submit__btns">
@@ -29,12 +38,16 @@ export default {
   data() {
     return {
       text: "",
-      showTextArea: false,
+      selectedFile: null,
     };
   },
   methods: {
-    toggleTextArea() {
-      this.showTextArea = !this.showTextArea;
+    openFilePicker() {
+      this.$refs.fileInput.$el.click();
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      this.selectedFile = file;
     },
   },
 };
@@ -48,17 +61,25 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.btns {
-  display: flex;
-  column-gap: 20px;
-  margin-bottom: 2%;
+.input-wrapper input[type="file"] {
+  position: absolute;
+  left: -9999px;
+}
+.input-wrapper button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+}
+.input-wrapper button:hover {
+  background: teal;
 }
 .content {
   width: 90%;
   height: 300px;
 }
 .content__title {
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
 }
@@ -71,6 +92,12 @@ li {
   list-style: none;
 }
 .submit__btns {
-    display: flex;
+  display: flex;
+  column-gap: 20px;
+  padding-top: 2%;
+}
+.my__input {
+  border: none;
+  display: none;
 }
 </style>

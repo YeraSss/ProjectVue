@@ -182,8 +182,6 @@ export default {
       }
     },
     toggleTable(groupId) {
-      console.log(this.$store.state.groupIndicators);
-      console.log(this.$store.state.indicators);
       const index = this.openTables.indexOf(groupId);
       if (index !== -1) {
         this.openTables.splice(index, 1);

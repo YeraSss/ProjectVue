@@ -5,6 +5,7 @@ import ReportHistoryPage from "@/pages/ReportHistoryPage.vue";
 import FormPage from "@/pages/FormPage.vue";
 import GroupIndicatorsPage from "@/pages/GroupIndicatorsPage.vue";
 import FilledTablesPage from "@/pages/FilledTablesPage.vue";
+import FreeFormPage from "@/pages/FreeFormPage.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { useStore } from "vuex";
 
@@ -31,6 +32,11 @@ const routes = [
         name: "GroupIndicators",
         component: GroupIndicatorsPage,
         path: "group_indicators",
+      },
+      {
+        name: "FreeForm",
+        component: FreeFormPage,
+        path: "free_form",
       },
       {
         name: "FilledTables",
@@ -60,6 +66,14 @@ router.beforeEach((to, from) => {
   const store = useStore();
   if (to.meta.needAuth && !store.state.isAuth) {
     return { name: "Login" };
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  if (to === from) {
+    next("/");
+  } else {
+    next();
   }
 });
 
