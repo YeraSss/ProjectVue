@@ -8,10 +8,16 @@
           </div>
         </div>
         <li>
-          <textarea v-model="text" name="freetext" id="freetext" cols="100" rows="15">
+          <textarea
+            v-model="text"
+            name="freetext"
+            id="freetext"
+            cols="100"
+            rows="15"
+          >
           </textarea>
         </li>
-        <li>
+        <li class="file-wrapper">
           <div class="input-wrapper">
             <my-input
               class="my__input"
@@ -22,11 +28,14 @@
             <button @click="openFilePicker">Выбрать файл</button>
             <div v-if="selectedFile">{{ selectedFile.name }}</div>
           </div>
+          <div class="submit__file">
+            <my-button @click="uploadFile"> Отправить файл </my-button>
+          </div>
         </li>
       </ul>
       <div class="submit__btns">
         <my-button>Отправить</my-button>
-        <my-button>Сохранить</my-button>
+        <my-button @click="uploadText">Сохранить</my-button>
         <my-button>Отмена</my-button>
       </div>
     </div>
@@ -34,6 +43,8 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -42,12 +53,62 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      fetchIndicators: "fetchIndicators",
+    }),
     openFilePicker() {
       this.$refs.fileInput.$el.click();
     },
     handleFileChange(event) {
       const file = event.target.files[0];
       this.selectedFile = file;
+    },
+    async uploadFile() {
+      const formData = new FormData();
+      formData.append(this.selectedFile.name, this.selectedFile);
+      await axios
+        .post(this.$store.state.urlFreeFormFile, formData, {
+          headers: {
+            Authorization: this.$store.state.token,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async uploadText() {
+      this.fetchIndicators(this.$store.state.groupIndicators[0].id);
+      const dataToPost = [
+        {
+          id: this.$store.state.indicators[1].id,
+          indicator_text: this.text,
+        },
+      ];
+      await axios
+        .post(
+          this.$store.state.urlToPatchData,
+          {
+            create: dataToPost,
+            output_report: {
+              report_status: "Черновик",
+              output_id: this.$store.state.outputReportId,
+            },
+          },
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
@@ -64,6 +125,21 @@ export default {
 .input-wrapper input[type="file"] {
   position: absolute;
   left: -9999px;
+}
+.file-wrapper {
+  display: flex;
+  column-gap: 10px;
+}
+.submit__file button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 0;
+}
+.submit__file button:hover {
+  background: teal;
 }
 .input-wrapper button {
   background-color: #007bff;

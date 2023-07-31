@@ -19,7 +19,6 @@
 export default {
   methods: {
     refreshData() {
-      localStorage.clear();
       this.$store.commit("setIsAuth", false);
       this.$store.commit("setToken", null);
       this.$store.commit("setReportsState");

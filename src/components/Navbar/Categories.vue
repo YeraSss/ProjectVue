@@ -1,48 +1,39 @@
 <template>
   <div class="categories">
     <div
-      class="gri__block"
+      class="category"
+      :class="{ active: category.showSubCategory }"
       v-for="category in $store.state.categories"
       :key="category.id"
-      :class="{ active: category.showSubCategory }"
     >
-      <div class="gri category" @click="toggleSubCategory(category)">
-        <span class="sc__name">{{ category.short_name }}</span>
-        <span
-          class="arrow"
-          :class="{ 'arrow-down': category.showSubCategory }"
-        ></span>
-      </div>
-      <div class="gri__subCategory" v-show="category.showSubCategory">
+      <span
+        class="short__name"
+        @click="
+          toggleSubCategory(category);
+          showSubCategory(category);
+        "
+        >{{ category.short_name }}</span
+      >
+      <div class="sub__category" v-show="category.showSubCategory">
         <div
-          v-for="subCategory in getSubCategories(category.id)"
+          class="sub__category__shortName"
+          v-for="subCategory in categorySubCategories(category.id)"
           :key="subCategory.id"
         >
-          <div class="gri sub__category" @click="toggleReports(subCategory)">
-            <span class="sc__name">{{ subCategory.short_name }}</span>
-            <span
-              class="arrow"
-              :class="{ 'arrow-down': subCategory.showReports }"
-            ></span>
-          </div>
-          <div class="gri__report" v-show="subCategory.showReports">
+          <span
+            @click="
+              toggleReports(subCategory);
+              showReport(subCategory);
+            "
+            >{{ subCategory.short_name }}</span
+          >
+          <div v-show="subCategory.showReports">
             <div
-              class="gri reports"
-              v-for="report in getReports(subCategory.id)"
+              class="report__short__name"
+              v-for="report in subCategoryReports(subCategory.id)"
               :key="report.id"
-              @click="
-                toggleReport(report);
-                fetchReportsOutList(report.id);
-                $store.commit('setCurrentReportId', report.id);
-                $router.push('reports_history');
-              "
-              :style="{
-                backgroundColor: report.clicked
-                  ? 'rgba(0, 158, 227, 0.3)'
-                  : 'transparent',
-              }"
             >
-              {{ report.short_name }}
+              <span>{{ report.short_name }}</span>
             </div>
           </div>
         </div>
@@ -54,140 +45,108 @@
 <script>
 import { mapActions } from "vuex";
 export default {
+  data() {
+    return {
+      subCategories: [],
+      reports: [],
+    };
+  },
   methods: {
     ...mapActions({
-      fetchReportsOutList: "fetchReportsOutList",
-      fetchGroupIndicators: "fetchGroupIndicators",
+      fetchSubCategories: "fetchSubCategories",
+      fetchReports: "fetchReports",
     }),
-    toggleSubCategory(category) {
-      category.showSubCategory = !category.showSubCategory;
+    async toggleSubCategory(category) {
+      await this.fetchSubCategories(category.id);
+      if (this.subCategories.length) {
+        for (let i = 0; i < this.subCategories.length; i++) {
+          if (
+            this.subCategories[i].id === this.$store.state.subCategories[0].id
+          ) {
+            return;
+          }
+        }
+        this.subCategories.push(...this.$store.state.subCategories);
+      } else {
+        this.subCategories = [...this.$store.state.subCategories];
+      }
     },
-    toggleReports(subCategory) {
-      subCategory.showReports = !subCategory.showReports;
-      
+    showSubCategory(category) {
+      this.$store.commit("setShowSubCategory", category);
     },
-    toggleReport(report) {
-      this.$store.commit("setBreadCrumbs", report);
-      this.$store.commit("setReportsClickToTrue", report);
-      this.$store.commit("setReportsClickToFalse", report);
-      this.fetchGroupIndicators(report.id);
+    async toggleReports(subCategory) {
+      await this.fetchReports(subCategory.id);
+      if (this.reports.length) {
+        for (let i = 0; i < this.reports.length; i++) {
+          if (this.reports[i] === this.$store.state.reports[0].id) {
+            return;
+          }
+        }
+        this.reports.push(...this.$store.state.reports);
+      } else {
+        this.reports = [...this.$store.state.reports];
+      }
+    },
+    showReport(subCategory) {
+      this.$store.commit("setShowReports", subCategory);
+      console.log(this.reports);
     },
   },
   computed: {
-    getSubCategories() {
-      return (parentId) =>
-        this.$store.state.subCategories.filter(
-          (subCategory) => subCategory.parent === parentId
+    categorySubCategories() {
+      return (categoryId) => {
+        return this.subCategories.filter(
+          (subCategory) => subCategory.parent === categoryId
         );
+      };
     },
-    getReports() {
-      return (subCategoryId) =>
-        this.$store.state.reports.filter(
-          (report) => report.category_report === subCategoryId
-        );
+    subCategoryReports() {
+      return (subCategoryId) => {
+        return this.reports.filter((report) => {
+          report.category_report === subCategoryId;
+        });
+      };
     },
   },
 };
 </script>
 
 <style scoped>
+.categories {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.6rem;
+  font-size: 14px;
+}
+.category {
+  padding: 1%;
+}
+.category:hover {
+  background: white;
+  color: black;
+  cursor: pointer;
+}
 span {
   display: block;
 }
-.sc__name {
-  width: 92%;
+.short__name {
+  width: 93%;
 }
-.gri {
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
-  padding: 1%;
-}
-.gri:hover {
-  background-color: #36c0ef;
-  color: #000000;
-}
-.category {
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-}
-
-.category:hover {
-  background-color: #ffffff;
+.active {
+  background: white;
   color: black;
 }
 .sub__category {
-  width: 98%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 400;
-  margin-bottom: 1%;
-  padding: 1.2%;
-}
-.sub__category::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 4px;
-  background-color: black;
-  border-radius: 50%;
-}
-.sub__category:hover {
-  background-color: rgba(0, 158, 227, 0.15);
-}
-.reports {
-  font-size: 14px;
-  font-weight: 400;
-  position: relative;
-  margin-bottom: 1%;
-  padding: 1%;
-}
-.reports::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 4px;
-  background-color: black;
-  border-radius: 50%;
-}
-.reports:hover {
-  background-color: rgba(0, 158, 227, 0.15);
-}
-.gri__subCategory {
   padding-left: 5%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.4rem;
+  padding-top: 2%;
 }
-.gri__report {
-  padding-left: 10%;
+.sub__category__shortName:hover {
+  background: rgba(0, 158, 227, 0.15);
 }
-.gri__block.active {
-  background-color: #edf5f9;
-  color: #000000;
-}
-.arrow {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-left: 8px;
-  border: solid #000000;
-  border-width: 0 1px 1px 0;
-  transform: rotate(-45deg);
-  transition: transform 0.3s ease;
-}
-.arrow-down {
-  transform: rotate(45deg);
-}
-.gri__block {
-  margin-bottom: 2%;
+.sub__category__shortName {
+  padding: 2px;
 }
 </style>

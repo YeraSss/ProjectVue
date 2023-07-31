@@ -6,6 +6,7 @@ import FormPage from "@/pages/FormPage.vue";
 import GroupIndicatorsPage from "@/pages/GroupIndicatorsPage.vue";
 import FilledTablesPage from "@/pages/FilledTablesPage.vue";
 import FreeFormPage from "@/pages/FreeFormPage.vue";
+import FilledFreeFormPage from "@/pages/FilledFreeFormPage.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { useStore } from "vuex";
 
@@ -42,6 +43,11 @@ const routes = [
         name: "FilledTables",
         component: FilledTablesPage,
         path: "filled_tables",
+      },
+      {
+        name: "FilledFreeText",
+        component: FilledFreeFormPage,
+        path: "filled_freeform",
       },
     ],
   },

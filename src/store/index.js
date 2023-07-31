@@ -9,6 +9,7 @@ export default createStore({
     password: "",
     base_url: import.meta.env.VITE_API_BASE_URL,
     urlCategories: `api/reports-cat-list/`,
+    urlSubCategories: "api/reports-ch-list/",
     urlReports: `api/reports-list/`,
     urlGroupIndicators: `api/reports-gp-list/`,
     urlIndicators: `api/reports-idc-list/`,
@@ -22,7 +23,7 @@ export default createStore({
     urlToPatchData: `api/reports-idc-values/`,
     urlReportsFile: `api/reports-file/`,
     urlAdmin: `admin/`,
-    isAdmin: false,
+    urlFreeFormFile: "reports-file/",
     categories: [],
     subCategories: [],
     reports: [],
@@ -30,11 +31,13 @@ export default createStore({
     indicators: [],
     reportsOutList: [],
     reportsIdcValues: [],
+    responseFromUploadFile: [],
+    breadCrumbs: [],
+    isAdmin: false,
     currentReportId: null,
     outputReportId: null,
-    responseFromUploadFile: [],
-    isChangable: false,
-    breadCrumbs: [],
+    isFreeText: false,
+    isChangable: null,
   }),
   mutations: {
     setUsername(state, newVal) {
@@ -46,6 +49,9 @@ export default createStore({
     setIsAuth(state, bool) {
       state.isAuth = bool;
     },
+    setIsFreeText(state, bool) {
+      state.isFreeText = bool;
+    },
     setToken(state, newToken) {
       if (newToken === null || newToken[0] === "T") {
         state.token = newToken;
@@ -53,7 +59,7 @@ export default createStore({
         state.token = `Token ${newToken}`;
       }
     },
-    serUrls(state) {
+    setUrls(state) {
       state.urlCategories = state.base_url + state.urlCategories;
       state.urlReports = state.base_url + state.urlReports;
       state.urlGroupIndicators = state.base_url + state.urlGroupIndicators;
@@ -68,18 +74,20 @@ export default createStore({
         state.base_url + state.urlDownloadFromHistory;
       state.urlToPatchData = state.base_url + state.urlToPatchData;
       state.urlAdmin = state.base_url + state.urlAdmin;
+      state.urlFreeFormFile = state.base_url + state.urlFreeFormFile;
+      state.urlSubCategories = state.base_url + state.urlSubCategories;
     },
     setCategories(state, newCategories) {
-      const categories = newCategories.filter((item) => item.parent == null);
-      const subcategories = newCategories.filter(
-        (item) => item.parent !== null
-      );
+      const categories = newCategories;
       state.categories = categories.map((category) => ({
         ...category,
         showSubCategory: false,
       }));
-      state.subCategories = subcategories.map((category) => ({
-        ...category,
+    },
+    setSubCategories(state, newValue) {
+      const subCategories = newValue;
+      state.subCategories = subCategories.map((subCategory) => ({
+        ...subCategory,
         showReports: false,
       }));
     },
@@ -126,6 +134,22 @@ export default createStore({
     },
     setIsChangable(state, bool) {
       state.isChangable = bool;
+    },
+    setShowSubCategory(state, category) {
+      state.categories.forEach((item) => {
+        if (item.id === category.id) {
+          item.showSubCategory = !item.showSubCategory;
+          return;
+        }
+      });
+    },
+    setShowReports(state, subCategory) {
+      state.subCategories.forEach((item) => {
+        if (item.id === subCategory.id) {
+          item.showReports = !item.showReports;
+          return;
+        }
+      });
     },
     setReportsState(state) {
       state.reports.forEach((report) => {
@@ -204,9 +228,24 @@ export default createStore({
         alert("Ошибка с категориями");
       }
     },
-    async fetchReports({ commit, state }) {
+    async fetchSubCategories({ commit, state }, id) {
+      try {
+        const response = await axios.get(state.urlSubCategories + id + "/", {
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setSubCategories", response.data.results);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async fetchReports({ commit, state }, id) {
       try {
         const response = await axios.get(state.urlReports, {
+          params: {
+            category_id: id,
+          },
           headers: {
             Authorization: state.token,
           },
