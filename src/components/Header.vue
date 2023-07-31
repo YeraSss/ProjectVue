@@ -19,11 +19,11 @@
 export default {
   methods: {
     refreshData() {
+      localStorage.clear();
       this.$store.commit("setIsAuth", false);
       this.$store.commit("setToken", null);
-      this.$router.push("/Login");
       this.$store.commit("setReportsState");
-      localStorage.clear();
+      this.$router.push("/Login");
     },
     redirectToExternalSite() {
       window.location.href = this.$store.state.urlAdmin;
