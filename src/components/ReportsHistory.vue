@@ -67,13 +67,13 @@ export default {
       } else {
         this.$store.commit("setIsChangable", false);
       }
-      if (this.store.state.groupIndicators.length === 1) {
+      if (this.$store.state.groupIndicators.length === 1) {
         this.$store.commit("setIsFreeText", true);
       } else {
         this.$store.commit("setIsFreeText", false);
       }
 
-      if (this.store.state.groupIndicators.length > 1) {
+      if (this.$store.state.groupIndicators.length > 1) {
         this.$router.push("/filled_tables");
       }
     },

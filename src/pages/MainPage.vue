@@ -24,13 +24,11 @@ export default {
   methods: {
     ...mapActions({
       fetchCategories: "fetchCategories",
-      fetchReports: "fetchReports",
     }),
   },
   mounted() {
     if (this.$store.state.isAuth) {
       this.fetchCategories();
-      this.fetchReports();
     }
   },
 };

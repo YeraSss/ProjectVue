@@ -9,7 +9,6 @@ export default createStore({
     password: "",
     base_url: import.meta.env.VITE_API_BASE_URL,
     urlCategories: `api/reports-cat-list/`,
-    urlSubCategories: "api/reports-ch-list/",
     urlReports: `api/reports-list/`,
     urlGroupIndicators: `api/reports-gp-list/`,
     urlIndicators: `api/reports-idc-list/`,
@@ -230,9 +229,12 @@ export default createStore({
     },
     async fetchSubCategories({ commit, state }, id) {
       try {
-        const response = await axios.get(state.urlSubCategories + id + "/", {
+        const response = await axios.get(state.urlCategories, {
           headers: {
             Authorization: state.token,
+          },
+          params: {
+            parent_id: id,
           },
         });
         commit("setSubCategories", response.data.results);
