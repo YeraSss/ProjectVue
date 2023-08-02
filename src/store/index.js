@@ -4,7 +4,7 @@ import axios from "axios";
 export default createStore({
   state: () => ({
     isAuth: false,
-    token: "",
+    token: null,
     username: "",
     password: "",
     base_url: import.meta.env.VITE_API_BASE_URL,
@@ -48,9 +48,6 @@ export default createStore({
     setIsAuth(state, bool) {
       state.isAuth = bool;
     },
-    setIsFreeText(state, bool) {
-      state.isFreeText = bool;
-    },
     setToken(state, newToken) {
       if (newToken === null || newToken[0] === "T") {
         state.token = newToken;
@@ -58,6 +55,10 @@ export default createStore({
         state.token = `Token ${newToken}`;
       }
     },
+    setIsFreeText(state, bool) {
+      state.isFreeText = bool;
+    },
+
     setUrls(state) {
       state.urlCategories = state.base_url + state.urlCategories;
       state.urlReports = state.base_url + state.urlReports;

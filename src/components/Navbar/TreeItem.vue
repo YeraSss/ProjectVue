@@ -1,14 +1,13 @@
 <template>
-  <div
-    @click.stop="handleItemClick"
-    class="tree-item"
-    :class="{ active: isOpen }"
-  >
-    <div class="parent">{{ item.short_name }}</div>
+  <div class="tree-item" :class="{ active: isOpen }">
+    <div class="parent" @click.stop="handleItemClick">
+      <div class="parent__short__name">{{ item.short_name }}</div>
+      <span class="arrow" :class="{ 'arrow-down': isOpen }"></span>
+    </div>
     <ul class="tree-list" v-if="item.children && isOpen">
       <TreeItem v-for="child in children" :key="child.id" :item="child" />
     </ul>
-    <ul class="tree-list" v-else-if="!item.children">
+    <ul class="tree-list" v-else-if="!item.children && isOpen">
       <div
         v-for="report in children"
         :key="report.id"
@@ -84,11 +83,11 @@ export default {
 .tree-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding-left: 2%;
 }
 
 .tree-report {
-  margin-left: 5%;
+  margin-left: 2%;
   margin-bottom: 2%;
   margin-top: 2%;
   padding: 2%;
@@ -101,9 +100,27 @@ export default {
   width: 100%;
   height: 100%;
   padding: 1%;
+  display: flex;
+  align-items: center;
 }
 .parent:hover {
   background: rgba(0, 158, 227, 0.15);
   color: black;
+}
+.arrow {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 8px;
+  border: solid #000000;
+  border-width: 0 1px 1px 0;
+  transform: rotate(-45deg);
+  transition: transform 0.3s ease;
+}
+.arrow-down {
+  transform: rotate(45deg);
+}
+.parent__short__name {
+  width: 98%;
 }
 </style>

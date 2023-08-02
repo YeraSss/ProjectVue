@@ -48,31 +48,6 @@ export default {
     }),
     selectItem(item) {
       this.searchTerm = item;
-      let foundObj = null;
-      foundObj = this.$store.state.categories.find(
-        (obj) => obj.short_name === item
-      );
-      if (foundObj) {
-        this.$store.commit("setClickedKey", foundObj);
-      } else {
-        foundObj = this.$store.state.subCategories.find(
-          (obj) => obj.short_name === item
-        );
-        if (foundObj) {
-          this.$store.commit("setClickedKey", foundObj);
-        } else {
-          foundObj = this.$store.state.reports.find(
-            (obj) => obj.short_name === item
-          );
-          this.$store.commit("setClickedKey", foundObj);
-        }
-      }
-      if (foundObj.category_report) {
-        this.fetchReportsOutList(foundObj.id);
-        this.fetchGroupIndicators(foundObj.id);
-        this.$router.push("reports_history");
-        this.$store.commit("setBreadCrumbs", foundObj);
-      }
     },
     clearInput() {
       this.searchTerm = "";

@@ -1,7 +1,7 @@
 <template>
   <nav class="breadcrumbs">
     <ul>
-      <li v-for="crumb in $store.state.breadCrumbs" :key="crumb.id">
+      <li v-for="crumb in $store.state.breadCrumbs" :key="crumb.short_name">
         {{ crumb.short_name }}
       </li>
     </ul>
