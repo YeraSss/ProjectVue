@@ -7,7 +7,8 @@
 <script>
 export default {
   mounted() {
-    this.$store.commit("serUrls");
+    this.$store.commit("setUrls");
+    
   },
 };
 </script>

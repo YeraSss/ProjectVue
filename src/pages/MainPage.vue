@@ -13,22 +13,22 @@
 <script>
 import NavBar from "@/components/Navbar/NavBar.vue";
 import Header from "@/components/Header.vue";
+import FreeForm from "@/components/FreeForm/FreeForm.vue";
 import { mapActions } from "vuex";
 export default {
   components: {
     Header,
     NavBar,
+    FreeForm,
   },
   methods: {
     ...mapActions({
       fetchCategories: "fetchCategories",
-      fetchReports: "fetchReports",
     }),
   },
   mounted() {
     if (this.$store.state.isAuth) {
       this.fetchCategories();
-      this.fetchReports();
     }
   },
 };

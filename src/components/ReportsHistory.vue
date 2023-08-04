@@ -35,7 +35,6 @@
                 @click="
                   fetchGroupIndicatorsByHistory(item.id);
                   toggleTableByStatus(item.report_status);
-                  $router.push('/filled_tables');
                 "
               >
                 Просмотреть отчет
@@ -67,6 +66,15 @@ export default {
         this.$store.commit("setIsChangable", true);
       } else {
         this.$store.commit("setIsChangable", false);
+      }
+      if (this.$store.state.groupIndicators.length === 1) {
+        this.$store.commit("setIsFreeText", true);
+      } else {
+        this.$store.commit("setIsFreeText", false);
+      }
+
+      if (this.$store.state.groupIndicators.length > 1) {
+        this.$router.push("/filled_tables");
       }
     },
     async downloadHistoryFile(id) {

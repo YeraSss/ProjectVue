@@ -1,10 +1,15 @@
 <template>
   <div class="search">
-    <my-input
-      v-model="searchTerm"
-      class="search__input"
-      placeholder="Поиск..."
-    />
+    <div class="search__container">
+      <my-input
+        v-model="searchTerm"
+        class="search__input"
+        placeholder="Поиск..."
+      />
+      <span v-if="searchTerm" class="clear-icon" @click="clearInput">
+        &#10006;
+      </span>
+    </div>
     <ul v-if="filteredItems.length && searchTerm" class="dropdown">
       <li
         v-for="item in filteredItems"
@@ -43,37 +48,18 @@ export default {
     }),
     selectItem(item) {
       this.searchTerm = item;
-      let foundObj = null;
-      foundObj = this.$store.state.categories.find(
-        (obj) => obj.short_name === item
-      );
-      if (foundObj) {
-        this.$store.commit("setClickedKey", foundObj);
-      } else {
-        foundObj = this.$store.state.subCategories.find(
-          (obj) => obj.short_name === item
-        );
-        if (foundObj) {
-          this.$store.commit("setClickedKey", foundObj);
-        } else {
-          foundObj = this.$store.state.reports.find(
-            (obj) => obj.short_name === item
-          );
-          this.$store.commit("setClickedKey", foundObj);
-        }
-      }
-      if (foundObj.category_report) {
-        this.fetchReportsOutList(foundObj.id);
-        this.fetchGroupIndicators(foundObj.id);
-        this.$router.push("reports_history");
-        this.$store.commit("setBreadCrumbs", foundObj);
-      }
+    },
+    clearInput() {
+      this.searchTerm = "";
     },
   },
 };
 </script>
 
 <style scoped>
+.search__container {
+  position: relative;
+}
 .search__input {
   width: 100%;
   outline: none;
@@ -81,6 +67,15 @@ export default {
   padding: 10px 15px;
   border-radius: 5px;
   font-size: 12px;
+  padding-right: 24px;
+}
+.clear-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
 }
 .dropdown {
   width: 100%;

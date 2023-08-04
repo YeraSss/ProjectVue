@@ -1,5 +1,6 @@
 <template>
   <div class="group__indicators__page">
+    <BreadCrumbs />
     <Title />
     <GroupIndicators />
   </div>
@@ -8,10 +9,13 @@
 <script>
 import GroupIndicators from "@/components/GroupIndicators/GroupIndicators.vue";
 import Title from "@/components/InfoTitle/Title.vue";
+import BreadCrumbs from "@/components/BreadCrumbs/BreadCrumbs.vue";
+
 export default {
   components: {
     GroupIndicators,
     Title,
+    BreadCrumbs,
   },
 };
 </script>
