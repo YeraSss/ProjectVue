@@ -9,7 +9,7 @@
   </template>
   
   <script>
-  import TreeItem from "./TreeItem.vue";
+  import TreeItem from "./DocumentsList.vue";
   export default {
     components: {
       TreeItem,
