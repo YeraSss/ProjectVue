@@ -1,17 +1,21 @@
 <template>
   <div class="navbar">
     <Search />
+    <hr>
+    <Tabs />
     <Categories />
   </div>
 </template>
 
 <script>
+import Tabs from "@/components/Navbar/Tabs.vue";
 import Search from "@/components/Navbar/Search.vue";
-import Categories from "@/components/Navbar/Categories.vue";
+//import Categories from "@/components/Navbar/Categories.vue";
 export default {
   components: {
+    Tabs,
     Search,
-    Categories,
+    //Categories,
   },
 };
 </script>
