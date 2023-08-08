@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="treeview">
     <TreeItem
       v-for="item in $store.state.categories"
       :key="item.id"
@@ -17,4 +17,5 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
