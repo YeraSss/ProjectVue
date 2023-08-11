@@ -4,6 +4,25 @@ import components from "@/components/UI";
 import router from "@/router/router";
 import store from "@/store";
 import vuexLocalStoragePlugin from "@/plugins/vuexLocalStorage";
+import { createVuetify } from "vuetify/lib/framework.mjs";
+import * as componentsVuetify from "vuetify/components";
+import * as directives from "vuetify/directives";
+import {aliases, mdi} from "vuetify/lib/iconsets/mdi";
+
+const vuetify = createVuetify({
+  theme: {
+    defaultTheme: 'light'
+  },
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi
+    },
+  },
+  componentsVuetify,
+  directives,
+});
 
 const app = createApp(App);
 
@@ -22,5 +41,6 @@ components.forEach((component) => {
 
 app.use(router);
 app.use(store);
+app.use(vuetify);
 vuexLocalStoragePlugin(store);
 app.mount("#app");

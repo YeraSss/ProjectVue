@@ -23,6 +23,9 @@ export default createStore({
     urlReportsFile: `/api/reports-file/`,
     urlAdmin: `/admin/`,
     urlFreeFormFile: "/reports-file/",
+    urlDocumentsList: `/api/documents-list/`,
+    urlDocumentsCatList: `/api/documents-cat-list/`,
+    urlDocumentsGpList: `/api/documents-gp-list/`,
     categories: [],
     subCategories: [],
     reports: [],
@@ -37,6 +40,8 @@ export default createStore({
     outputReportId: null,
     isFreeText: false,
     isChangable: null,
+    docCategories: [],
+    documentsList: [],
   }),
   mutations: {
     setUsername(state, newVal) {
@@ -71,11 +76,14 @@ export default createStore({
       state.urlSaveData = state.base_url + state.urlSaveData;
       state.urlLogin = state.base_url + state.urlLogin;
       state.urlDownloadFromHistory =
-        state.base_url + state.urlDownloadFromHistory;
+      state.base_url + state.urlDownloadFromHistory;
       state.urlToPatchData = state.base_url + state.urlToPatchData;
       state.urlAdmin = state.base_url + state.urlAdmin;
       state.urlFreeFormFile = state.base_url + state.urlFreeFormFile;
       state.urlSubCategories = state.base_url + state.urlSubCategories;
+      state.urlDocumentsList = state.base_url + state.urlDocumentsList;
+      state.urlDocumentsCatList = state.base_url + state.urlDocumentsCatList;
+      state.urlDocumentsGpList = state.base_url + state.urlDocumentsGpList;
     },
     setCategories(state, newCategories) {
       const categories = newCategories;
@@ -213,6 +221,22 @@ export default createStore({
         parentCategory.showSubCategory = true;
       }
     },
+    setDocumentsList(state, newDocumentsList) {
+      const documentsList = newDocumentsList;
+      state.documentsList = documentsList.map((report) => ({
+        ...report
+      })) 
+    },
+    setDocumentsCatList(state, newDocumentsCatList) {
+      const docCategories = newDocumentsCatList;
+      state.docCategories = docCategories.map((category) => ({
+        ...category,
+        showSubCategory: false,
+      }));
+    },
+    setDocumentsGpList(state, documentsGpList) {
+      state.documentsGpList = documentsGpList;
+    },
   },
 
   actions: {
@@ -327,5 +351,45 @@ export default createStore({
           alert("Login error");
         });
     },
+    async fetchDocumentsList({ commit, state }, id) {
+      try {
+        const response = await axios.get(state.urlDocumentsList, {
+          params:{
+            category_id: id,
+          },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setDocumentsList", response.data.results);
+      } catch (e) {
+        alert("Ошибка получения списка документов");
+      }
+    },
+    async fetchDocumentsCatList({ commit, state }) {
+      try {
+        const response = await axios.get(state.urlDocumentsCatList, {
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setDocumentsCatList", response.data.results);
+      } catch (e) {
+        alert("Ошибка получения списка категорий документов");
+      }
+    },
+    async fetchDocumentsGpList({ commit, state }) {
+      try {
+        const response = await axios.get(state.urlDocumentsGpList, {
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setDocumentsGpList", response.data.results);
+      } catch (e) {
+        alert("Ошибка получения списка групп документов");
+      }
+    },
   },
-});
+  },
+);

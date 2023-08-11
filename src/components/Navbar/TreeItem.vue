@@ -29,6 +29,9 @@ export default {
       type: Object,
       required: true,
     },
+    type: {
+      String,
+    }
   },
   data() {
     return {
@@ -42,18 +45,27 @@ export default {
       fetchReports: "fetchReports",
       fetchReportsOutList: "fetchReportsOutList",
       fetchGroupIndicators: "fetchGroupIndicators",
+      fetchDocumentsList: "fetchDocumentsList",
     }),
     async handleItemClick() {
-      if (this.item.children) {
-        await this.fetchSubCategories(this.item.id);
-        this.children = [...this.$store.state.subCategories];
-        this.isOpen = !this.isOpen;
-      } else {
-        await this.fetchReports(this.item.id);
-        this.children = [...this.$store.state.reports];
-        this.isOpen = !this.isOpen;
+    if (this.item.children) {
+      await this.fetchSubCategories(this.item.id);
+      this.children = [...this.$store.state.subCategories];
+      this.isOpen = !this.isOpen;
+    } else {
+      if (this.type === 'report')
+      {
+      await this.fetchReports(this.item.id);
+      this.children = [...this.$store.state.reports];
       }
-    },
+      else {
+      await this.fetchDocumentsList(this.item.id);
+      this.children = [...this.$store.state.documentsList];
+      }
+     
+      this.isOpen = !this.isOpen;
+    }
+  },
     getMainPage(report) {
       report.clicked = true;
       this.$store.commit("setCurrentReportId", report.id);
