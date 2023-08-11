@@ -24,11 +24,14 @@ export default {
   methods: {
     ...mapActions({
       fetchCategories: "fetchCategories",
+      fetchDocumentsCatList: "fetchDocumentsCatList",
     }),
   },
   mounted() {
     if (this.$store.state.isAuth) {
       this.fetchCategories();
+      this.fetchDocumentsCatList();
+
     }
   },
 };

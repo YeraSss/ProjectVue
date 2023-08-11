@@ -3,7 +3,7 @@
     <Search />
     <hr>
     <Tabs />
-    <Categories />
+    <!-- <Categories /> -->
   </div>
 </template>
 

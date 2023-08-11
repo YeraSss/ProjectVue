@@ -17,8 +17,8 @@
   </template>
   
   <script>
-  import Categories from './Categories.vue'; // Подключите компонент Categories.vue
-  import Documents from './Documents.vue'; // Подключите компонент Documents.vue
+  import Categories from './Categories.vue';
+  import Documents from './Documents.vue';
   
   export default {
     components: {
@@ -27,7 +27,7 @@
     },
     data() {
       return {
-        selectedTab: null // Начально выбранной вкладки нет (оба компонента скрыты)
+        selectedTab: null
       };
     }
   };
@@ -39,7 +39,6 @@
     padding: 10px 20px;
     font-size: 16px;
     transition: background-color 0.3s ease;
-    margin: 0 20px;
     cursor: pointer;
   }
   .active-tab {
@@ -54,4 +53,12 @@
     border-radius: 10px;    
     padding: 10px 10px;
   }
-  </style>  
+  .reports-tab{
+    float: left;
+    cursor: pointer;
+  }
+  .documents-tab{
+    float: right;
+    cursor: pointer;
+  }
+  </style>
