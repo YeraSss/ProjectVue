@@ -52,7 +52,7 @@ export default {
   methods: {
     ...mapActions([
       "fetchCategoriesWithChildren",
-      "fetchElements123",
+      "fetchElements",
       "fetchReportsOutList",
       "fetchGroupIndicators",
       "fetchDocumentsList",
@@ -63,7 +63,7 @@ export default {
         this.children = categoryWithChildren;
       }
       if (this.item.reports) {
-        const elementsList = await this.fetchElements123(this.item.id);
+        const elementsList = await this.fetchElements(this.item.id);
         this.reportsList = elementsList;
       }
       this.isOpen = !this.isOpen;
