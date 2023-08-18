@@ -263,22 +263,7 @@ export default createStore({
         alert("Ошибка с категориями");
       }
     },
-    async fetchElements({ commit, state }, id) {
-      try {
-        const response = await axios.get(state.urlReports, {
-          params: {
-            category_id: id,
-          },
-          headers: {
-            Authorization: state.token,
-          },
-        });
-        commit("setElements", response.data.results);
-      } catch (e) {
-        alert("Не удалось получить Отчеты");
-      }
-    },
-    async fetchElements123({ state }, id) {
+    async fetchElements({ state }, id) {
       try {
         const response = await axios.get(state.urlReports, {
           params: {
