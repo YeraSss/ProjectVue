@@ -92,16 +92,9 @@ export default createStore({
         showSubCategory: false,
       }));
     },
-    setSubCategories(state, newValue) {
-      const subCategories = newValue;
-      state.subCategories = subCategories.map((subCategory) => ({
-        ...subCategory,
-        showReports: false,
-      }));
-    },
-    setReports(state, newReports) {
-      state.reports = newReports.map((report) => ({
-        ...report,
+    setElements(state, newElements) {
+      state.elements = newElements.map((element) => ({
+        ...element,
         clicked: false,
       }));
     },
@@ -240,19 +233,7 @@ export default createStore({
   },
 
   actions: {
-    async fetchCategories({ commit, state }) {
-      try {
-        const response = await axios.get(state.urlCategories, {
-          headers: {
-            Authorization: state.token,
-          },
-        });
-        commit("setCategories", response.data.results);
-      } catch (e) {
-        alert("Ошибка с категориями");
-      }
-    },
-    async fetchSubCategories({ commit, state }, id) {
+    async fetchCategories({ commit, state }, id = null) {
       try {
         const response = await axios.get(state.urlCategories, {
           headers: {
@@ -262,12 +243,27 @@ export default createStore({
             parent_id: id,
           },
         });
-        commit("setSubCategories", response.data.results);
+        commit("setCategories", response.data.results);
       } catch (e) {
-        console.log(e);
+        alert("Ошибка с категориями");
       }
     },
-    async fetchReports({ commit, state }, id) {
+    async fetchCategoriesWithChildren({ state }, id = null) {
+      try {
+        const response = await axios.get(state.urlCategories, {
+          headers: {
+            Authorization: state.token,
+          },
+          params: {
+            parent_id: id,
+          },
+        });
+        return response.data.results;
+      } catch (e) {
+        alert("Ошибка с категориями");
+      }
+    },
+    async fetchElements({ state }, id) {
       try {
         const response = await axios.get(state.urlReports, {
           params: {
@@ -277,7 +273,7 @@ export default createStore({
             Authorization: state.token,
           },
         });
-        commit("setReports", response.data.results);
+        return response.data.results;
       } catch (e) {
         alert("Не удалось получить Отчеты");
       }

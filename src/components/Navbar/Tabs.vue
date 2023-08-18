@@ -27,7 +27,7 @@
     },
     data() {
       return {
-        selectedTab: null
+        selectedTab: 'categories'
       };
     }
   };

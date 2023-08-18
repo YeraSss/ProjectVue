@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="logo" @click="$router.push('/')">
+    <div class="logo" @click="reloadPage">
       <img src="../assets/KMG_icon.svg" alt="KMG Logo" />
     </div>
     <div class="title">
@@ -25,10 +25,16 @@ export default {
       this.$router.push("/Login");
     },
     redirectToExternalSite() {
-      window.location.href = this.$store.state.urlAdmin;
+      const urlAdmin = this.$store.state.urlAdmin;
+      if (urlAdmin) {
+          window.open(urlAdmin, '_blank');
+        }
     },
-  },
-};
+    reloadPage() {
+    window.location.href = "/";
+  }
+}
+  };
 </script>
 
 <style scoped>
