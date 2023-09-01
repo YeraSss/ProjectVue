@@ -67,6 +67,10 @@ export default {
       }
       else if (this.item.document){
       const docList = await this.fetchDocumentsList123(this.item.id);
+      for (let i in docList){
+          docList[i].short_name = docList[i].naming.short_name
+          docList[i].full_name = docList[i].naming.full_name
+        }
       this.reportsList = docList;
       }
       else if (this.item.children) {
@@ -76,7 +80,9 @@ export default {
       if (this.item.reports) {
         const elementsList = await this.fetchElements(this.item.id);
         for (let i in elementsList){
-          elementsList[i].short_name = elementsList[i].naming.short_name}
+          elementsList[i].short_name = elementsList[i].naming.short_name
+          elementsList[i].full_name = elementsList[i].naming.full_name
+        }
         this.reportsList = elementsList;
         
       }
