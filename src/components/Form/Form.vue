@@ -101,11 +101,11 @@ export default {
         .post(
           this.$store.state.urlOutList,
           {
-            report_period: this.selectedPeriod,
-            report_year: this.selectedYear,
-            report_quarter: this.selectedQuarter || null,
-            report_month: this.selectedMonth || null,
-            report_status: "Черновик",
+            period: this.selectedPeriod,
+            year: this.selectedYear,
+            quarter: this.selectedQuarter || null,
+            month: this.selectedMonth || null,
+            status: "Черновик",
             report_id: this.$store.state.currentReportId,
           },
           {

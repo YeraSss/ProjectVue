@@ -21,20 +21,20 @@
         </thead>
         <tbody>
           <tr v-for="item in $store.state.reportsOutList" :key="item.id">
-            <td>{{ item.org }}</td>
+            <td>{{ item.organization }}</td>
             <td>{{ item.date_time }}</td>
             <td>{{ item.author }}</td>
-            <td>{{ item.report_period }}</td>
-            <td>{{ item.report_year }}</td>
-            <td>{{ item.report_quarter }}</td>
-            <td>{{ item.report_month }}</td>
-            <td>{{ item.report_status }}</td>
+            <td>{{ item.period }}</td>
+            <td>{{ item.year }}</td>
+            <td>{{ item.quarter }}</td>
+            <td>{{ item.month }}</td>
+            <td>{{ item.status }}</td>
             <td>
               <my-button
                 class="view__btn"
                 @click="
                   fetchGroupIndicatorsByHistory(item.id);
-                  toggleTableByStatus(item.report_status);
+                  toggleTableByStatus(item.status);
                 "
               >
                 Просмотреть отчет

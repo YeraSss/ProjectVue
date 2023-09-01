@@ -215,7 +215,7 @@ export default {
           {
             create: dataToPost,
             output_report: {
-              report_status: "Черновик",
+              status: "Черновик",
               output_id: this.$store.state.outputReportId,
             },
           },
@@ -248,7 +248,7 @@ export default {
           {
             create: dataToPost,
             output_report: {
-              report_status: "На согласовании",
+              status: "На согласовании",
               output_id: this.$store.state.outputReportId,
             },
           },

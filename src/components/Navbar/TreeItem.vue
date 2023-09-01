@@ -64,6 +64,8 @@ export default {
       }
       if (this.item.reports) {
         const elementsList = await this.fetchElements(this.item.id);
+        for (let i in elementsList){
+          elementsList[i].short_name = elementsList[i].naming.short_name}
         this.reportsList = elementsList;
       }
       this.isOpen = !this.isOpen;
