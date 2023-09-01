@@ -7,7 +7,7 @@
     class="parent"
     @click="handleItemClick"
     >
-      <v-list-item-content>
+      <v-list-item-content>        
         <v-list-item-title 
         class="parent_short_name">{{ item.short_name }}</v-list-item-title>
         <span class="arrow" :class="{ 'arrow-down': isOpen }"></span>
@@ -40,13 +40,15 @@ export default {
       type: Object,
       required: true,
     },
+    type: {
+      String,
+    }
   },
   data() {
     return {
       isOpen: false,
       children: [],
       reportsList: [],
-      isExpanded: false,
         };
   },
   methods: {
@@ -55,16 +57,26 @@ export default {
       "fetchElements",
       "fetchReportsOutList",
       "fetchGroupIndicators",
-      "fetchDocumentsList",
+      "fetchDocumentsList123",
+      "fetchDocumentsCatList123",
     ]),
     async handleItemClick() {
-      if (this.item.children) {
+      if (this.type === "documentTab"){
+        const docCategoryList = await this.fetchDocumentsCatList123(this.item.id);
+        this.children = docCategoryList;
+      }
+      else if (this.item.document){
+      const docList = await this.fetchDocumentsList123(this.item.id);
+      this.reportsList = docList;
+      }
+      else if (this.item.children) {
         const categoryWithChildren = await this.fetchCategoriesWithChildren(this.item.id);
         this.children = categoryWithChildren;
       }
       if (this.item.reports) {
         const elementsList = await this.fetchElements(this.item.id);
         this.reportsList = elementsList;
+        
       }
       this.isOpen = !this.isOpen;
       if (this.isOpen === false){

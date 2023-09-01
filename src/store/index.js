@@ -35,7 +35,7 @@ export default createStore({
     reportsIdcValues: [],
     responseFromUploadFile: [],
     breadCrumbs: [],
-    isAdmin: false,
+    isAdmin: true,
     currentReportId: null,
     outputReportId: null,
     isFreeText: false,
@@ -362,14 +362,47 @@ export default createStore({
         alert("Ошибка получения списка документов");
       }
     },
-    async fetchDocumentsCatList({ commit, state }) {
+    async fetchDocumentsList123({ state }, id) {
+      try {
+        const response = await axios.get(state.urlDocumentsList, {
+          params:{
+            category_id: id,
+          },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        return response.data.results;
+      } catch (e) {
+        alert("Ошибка получения списка документов");
+      }
+    },
+    async fetchDocumentsCatList({ commit, state }, id = null) {
       try {
         const response = await axios.get(state.urlDocumentsCatList, {
           headers: {
             Authorization: state.token,
           },
+          params:{
+            parent_id: id,
+          },
         });
         commit("setDocumentsCatList", response.data.results);
+      } catch (e) {
+        alert("Ошибка получения списка категорий документов");
+      }
+    },
+    async fetchDocumentsCatList123({ state }, id = null) {
+      try {
+        const response = await axios.get(state.urlDocumentsCatList, {
+          headers: {
+            Authorization: state.token,
+          },
+          params:{
+            parent_id: id,
+          },
+        });
+        return response.data.results;
       } catch (e) {
         alert("Ошибка получения списка категорий документов");
       }
