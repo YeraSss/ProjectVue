@@ -22,7 +22,7 @@ export default createStore({
     urlToPatchData: `/api/reports-idc-values/`,
     urlReportsFile: `/api/reports-file/`,
     urlAdmin: `/admin/`,
-    urlFreeFormFile: "/reports-file/",
+    urlFreeFormFile: "/api/reports-file/",
     urlDocumentsList: `/api/documents-list/`,
     urlDocumentsCatList: `/api/documents-cat-list/`,
     urlDocumentsGpList: `/api/documents-gp-list/`,

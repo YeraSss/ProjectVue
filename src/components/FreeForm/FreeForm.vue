@@ -4,7 +4,8 @@
       <ul>
         <div class="content__title">
           <div class="short__name">
-            {{ $store.state.groupIndicators[0].short_name }}
+            <h4>Введите текст или агрузите файл</h4>
+            <br>
           </div>
         </div>
         <li>
@@ -34,9 +35,7 @@
         </li>
       </ul>
       <div class="submit__btns">
-        <my-button>Отправить</my-button>
-        <my-button @click="uploadText">Сохранить</my-button>
-        <my-button>Отмена</my-button>
+        <my-button @click="uploadText">Сохранить текст</my-button>
       </div>
     </div>
   </div>
@@ -50,11 +49,13 @@ export default {
     return {
       text: "",
       selectedFile: null,
+      trigger: false,
     };
   },
   methods: {
     ...mapActions({
       fetchIndicators: "fetchIndicators",
+      fetchReportsOutList: "fetchReportsOutList",
     }),
     openFilePicker() {
       this.$refs.fileInput.$el.click();
@@ -65,7 +66,9 @@ export default {
     },
     async uploadFile() {
       const formData = new FormData();
-      formData.append(this.selectedFile.name, this.selectedFile);
+      formData.append('file', this.selectedFile);
+      formData.append('output_id', this.$store.state.outputReportId);
+      formData.append('indicator_id', 10);
       await axios
         .post(this.$store.state.urlFreeFormFile, formData, {
           headers: {
@@ -78,12 +81,13 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+      this.$router.push("/reports_history");
     },
     async uploadText() {
       this.fetchIndicators(this.$store.state.groupIndicators[0].id);
       const dataToPost = [
         {
-          id: this.$store.state.indicators[1].id,
+          id: this.$store.state.indicators[0].id,
           indicator_text: this.text,
         },
       ];
@@ -109,6 +113,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+      this.$router.push("/reports_history");
     },
   },
 };

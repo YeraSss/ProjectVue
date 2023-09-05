@@ -115,6 +115,7 @@ export default {
           }
         )
         .then((response) => {
+          console.log(response.data.output_report_id)
           this.$store.commit(
             "setOutputReportId",
             response.data.output_report_id

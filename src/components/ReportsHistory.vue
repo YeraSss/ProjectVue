@@ -75,6 +75,8 @@ export default {
 
       if (this.$store.state.groupIndicators.length > 1) {
         this.$router.push("/filled_tables");
+      } else {
+        this.$router.push("/filled_freeform");
       }
     },
     async downloadHistoryFile(id) {
