@@ -13,7 +13,7 @@
       </div>
       <div v-else>
         <ins>Файл отчета - {{this.inputValues["filename"]}}</ins>
-        <my-button @click="downloadFilledFile">Скачать файл - file</my-button>
+        <my-button @click="downloadFilledFile">Скачать файл</my-button>
       </div>
       <br>
     </ul>

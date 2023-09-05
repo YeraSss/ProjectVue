@@ -4,18 +4,25 @@
       <ul>
         <div class="content__title">
           <div class="short__name">
-            <h4>Введите текст или агрузите файл</h4>
+            <h4>Введите текст или загрузите файл</h4>
             <br>
           </div>
         </div>
+        <div class="file-wrapper">
+            <button @click="openFilePicker" :disabled="text!==''">Выбрать файл</button>
+            <div v-if="selectedFile">{{ selectedFile.name }}</div>
+            <my-button @click="uploadFile" :disabled="text!==''"> Отправить файл </my-button>
+      </div>
+      <div>
+        <br>
+      </div>
         <li>
           <textarea
             v-model="text"
             name="freetext"
             id="freetext"
             cols="100"
-            rows="15"
-          >
+            rows="15">
           </textarea>
         </li>
         <li class="file-wrapper">
@@ -26,17 +33,17 @@
               @change="handleFileChange"
               ref="fileInput"
             ></my-input>
-            <button @click="openFilePicker">Выбрать файл</button>
-            <div v-if="selectedFile">{{ selectedFile.name }}</div>
-          </div>
-          <div class="submit__file">
-            <my-button @click="uploadFile"> Отправить файл </my-button>
+
+            <div class="submit__btns" v-if="text!==''">
+              <my-button @click="uploadText">Сохранить текст</my-button>
+            </div>
+            <div v-else class="">
+              <br>
+              <my-button style="background-color: #b3b3b3; opacity: 20%;" @click="uploadText" disabled>Сохранить текст</my-button>
+            </div>
           </div>
         </li>
       </ul>
-      <div class="submit__btns">
-        <my-button @click="uploadText">Сохранить текст</my-button>
-      </div>
     </div>
   </div>
 </template>
@@ -49,7 +56,6 @@ export default {
     return {
       text: "",
       selectedFile: null,
-      trigger: false,
     };
   },
   methods: {
@@ -57,6 +63,10 @@ export default {
       fetchIndicators: "fetchIndicators",
       fetchReportsOutList: "fetchReportsOutList",
     }),
+    setIndicatorId(){
+      this.fetchIndicators(this.$store.state.groupIndicators[0].id);
+      console.log("done id")
+    },
     openFilePicker() {
       this.$refs.fileInput.$el.click();
     },
@@ -68,7 +78,7 @@ export default {
       const formData = new FormData();
       formData.append('file', this.selectedFile);
       formData.append('output_id', this.$store.state.outputReportId);
-      formData.append('indicator_id', 10);
+      formData.append('indicator_id', this.$store.state.indicators[0].id);
       await axios
         .post(this.$store.state.urlFreeFormFile, formData, {
           headers: {
@@ -84,7 +94,6 @@ export default {
       this.$router.push("/reports_history");
     },
     async uploadText() {
-      this.fetchIndicators(this.$store.state.groupIndicators[0].id);
       const dataToPost = [
         {
           id: this.$store.state.indicators[0].id,
@@ -116,6 +125,9 @@ export default {
       this.$router.push("/reports_history");
     },
   },
+  created() {
+    this.setIndicatorId()
+  }
 };
 </script>
 
@@ -176,6 +188,13 @@ li {
   display: flex;
   column-gap: 20px;
   padding-top: 2%;
+}
+.submit__hid {
+  display: flex;
+  column-gap: 20px;
+  padding-top: 2%;
+  color: beige;
+  background-color: beige;
 }
 .my__input {
   border: none;
