@@ -1,7 +1,7 @@
 <template>
   <div class="reports__history">
     <div class="history__title">
-      <h2>Журнал отчетов:</h2>
+      <h2>Журнал отчетов</h2>
     </div>
     <div>
       <table class="report__table">

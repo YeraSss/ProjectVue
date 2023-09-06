@@ -127,6 +127,9 @@ export default createStore({
     setCurrentReportId(state, newReportId) {
       state.currentReportId = newReportId;
     },
+    setFullName(state, fullName) {
+      state.FullName = fullName;
+    },
     setOutputReportId(state, newVal) {
       state.outputReportId = newVal;
     },

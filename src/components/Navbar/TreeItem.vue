@@ -95,6 +95,7 @@ export default {
     getMainPage(report) {
       report.clicked = true;
       this.$store.commit("setCurrentReportId", report.id);
+      this.$store.commit("setFullName", report.full_name);
       this.$store.commit("setBreadCrumbs", report);
       this.fetchReportsOutList(report.id);
       this.fetchGroupIndicators(report.id);
