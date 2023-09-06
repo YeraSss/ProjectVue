@@ -18,6 +18,7 @@
       v-for="childItem in children"
       :key="childItem.id"
       :item="childItem"
+      :type="type"
       />
     </div>
     <div class="report-list">
@@ -61,21 +62,15 @@ export default {
       "fetchDocumentsCatList123",
     ]),
     async handleItemClick() {
-      if (this.type === "documentTab"){
-        const docCategoryList = await this.fetchDocumentsCatList123(this.item.id);
-        this.children = docCategoryList;
-      }
-      else if (this.item.document){
-      const docList = await this.fetchDocumentsList123(this.item.id);
-      for (let i in docList){
-          docList[i].short_name = docList[i].naming.short_name
-          docList[i].full_name = docList[i].naming.full_name
+      console.log(this.type)
+      if (this.item.children) {
+        if(this.type=="reportTab"){
+          const categoryWithChildren = await this.fetchCategoriesWithChildren(this.item.id);
+          this.children = categoryWithChildren;
+        } else if (this.type=="documentTab"){
+          const docCategoryList = await this.fetchDocumentsCatList123(this.item.id);
+          this.children = docCategoryList;
         }
-      this.reportsList = docList;
-      }
-      else if (this.item.children) {
-        const categoryWithChildren = await this.fetchCategoriesWithChildren(this.item.id);
-        this.children = categoryWithChildren;
       }
       if (this.item.reports) {
         const elementsList = await this.fetchElements(this.item.id);
@@ -84,8 +79,16 @@ export default {
           elementsList[i].full_name = elementsList[i].naming.full_name
         }
         this.reportsList = elementsList;
-        
       }
+      if (this.item.document) {
+        const docList = await this.fetchDocumentsList123(this.item.id);
+        for (let i in docList){
+          docList[i].short_name = docList[i].naming.short_name
+          docList[i].full_name = docList[i].naming.full_name
+        }
+        this.reportsList = docList;
+      }
+      
       this.isOpen = !this.isOpen;
       if (this.isOpen === false){
         this.children = true;

@@ -4,7 +4,7 @@
       v-for="item in $store.state.docCategories"
       :key="item.id"
       :item="item"
-      :type="'documentTab'"
+      type="documentTab"
     />
   </div>
 </template>
