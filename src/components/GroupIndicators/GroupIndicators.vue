@@ -136,7 +136,6 @@ export default {
 
     clearAll() {
       this.$store.commit("setResponseFromUploadFile", []);
-      this.inputValues = {};
     },
     getInitialData() {
       this.$store.state.responseFromUploadFile.forEach((item) => {
@@ -271,6 +270,31 @@ export default {
     updateInputValue(indicatorId, value) {
       this.inputValues[indicatorId] = value;
     },
+  async deleteOutput(){
+    console.log(this.inputValues)
+    console.log(Object.keys(this.inputValues).length)
+    if(Object.keys(this.inputValues).length){
+      this.inputValues = {};
+      return "ok"
+    }else{
+    await axios.delete(
+      this.$store.state.urlOutList,{
+        headers: {
+          Authorization: this.$store.state.token,
+        },
+        data: {
+          output_id: this.$store.state.outputReportId
+        }
+      },
+    ).then((response) => {
+      console.log(response)
+    }).catch((error) => {
+      console.log(error)
+    })}
+  },
+  },
+  beforeUnmount(){
+    this.deleteOutput()
   },
   computed: {
     getObjectDataById() {
