@@ -124,9 +124,31 @@ export default {
         });
       this.$router.push("/reports_history");
     },
+  async deleteOutput(){
+    if(this.text || this.selectedFile){
+      return "ok"
+    }else{
+    await axios.delete(
+      this.$store.state.urlOutList,{
+        headers: {
+          Authorization: this.$store.state.token,
+        },
+        data: {
+          output_id: this.$store.state.outputReportId
+        }
+      },
+    ).then((response) => {
+      console.log(response)
+    }).catch((error) => {
+      console.log(error)
+    })}
+  },
   },
   created() {
     this.setIndicatorId()
+  },
+  beforeUnmount(){
+    this.deleteOutput()
   }
 };
 </script>
