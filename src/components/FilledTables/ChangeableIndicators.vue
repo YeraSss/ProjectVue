@@ -4,16 +4,12 @@
       class="back__btn"
       @click="
         $router.push('/reports_history');
-        clearAll();
-      "
-      >Назад</my-button
-    >
+        clearAll();">Назад</my-button>
     <h2>Просмотр отчета:</h2>
     <div
       v-for="group_indicator in $store.state.groupIndicators"
       :key="group_indicator.id"
-      class="gp__item"
-    >
+      class="gp__item">
       <ul>
         <div class="gp__title" @click="toggleTable(group_indicator.id)">
           <div class="short__name">

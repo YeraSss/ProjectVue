@@ -30,13 +30,9 @@
             <td>{{ item.month }}</td>
             <td>{{ item.status }}</td>
             <td>
-              <my-button
-                class="view__btn"
-                @click="
-                  fetchGroupIndicatorsByHistory(item.id);
-                  toggleTableByStatus(item.status);
-                "
-              >
+              <my-button class="view__btn"
+                @click="getHistory(item.id);
+                toggleTableByStatus(item.status);">
                 Просмотреть отчет
               </my-button>
             </td>
@@ -54,14 +50,22 @@
 </template>
 
 <script>
+import { mdiConsoleNetwork } from "@mdi/js";
 import axios from "axios";
 import { mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions({
       fetchGroupIndicatorsByHistory: "fetchGroupIndicatorsByHistory",
+      fetchDocGroupIndicatorsByHistory: "fetchDocGroupIndicatorsByHistory"
     }),
+    getHistory(id){
+      this.fetchDocGroupIndicatorsByHistory(id)
+      this.fetchGroupIndicatorsByHistory(id)
+      
+    },
     toggleTableByStatus(status) {
+      console.log(this.$store.state.currentEntity)
       if (status === "Черновик") {
         this.$store.commit("setIsChangable", true);
       } else {
@@ -72,11 +76,14 @@ export default {
       } else {
         this.$store.commit("setIsFreeText", false);
       }
-
-      if (this.$store.state.groupIndicators.length > 1) {
+      if(this.$store.state.currentEntity == "documentTab"){
+        this.$router.push("/filled_doc_tables")
+      } else if(this.$store.state.currentEntity == "reportTab"){
+        if (this.$store.state.groupIndicators.length > 1) {
         this.$router.push("/filled_tables");
       } else {
         this.$router.push("/filled_freeform");
+      }
       }
     },
     async downloadHistoryFile(id) {

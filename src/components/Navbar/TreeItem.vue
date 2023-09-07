@@ -60,9 +60,10 @@ export default {
       "fetchGroupIndicators",
       "fetchDocumentsList123",
       "fetchDocumentsCatList123",
+      "fetchDocumentsOutList",
+      "fetchDocumentsGpList"
     ]),
     async handleItemClick() {
-      console.log(this.type)
       if (this.item.children) {
         if(this.type=="reportTab"){
           const categoryWithChildren = await this.fetchCategoriesWithChildren(this.item.id);
@@ -96,12 +97,19 @@ export default {
       }
     },
     getMainPage(report) {
+      console.log(this.type)
       report.clicked = true;
       this.$store.commit("setCurrentReportId", report.id);
       this.$store.commit("setFullName", report.full_name);
       this.$store.commit("setBreadCrumbs", report);
-      this.fetchReportsOutList(report.id);
-      this.fetchGroupIndicators(report.id);
+      this.$store.commit("setCurrentEntity", this.type);
+      if(this.type=="reportTab"){
+        this.fetchReportsOutList(report.id);
+        this.fetchGroupIndicators(report.id);
+      }else if(this.type=="documentTab"){
+        this.fetchDocumentsOutList(report.id);
+        this.fetchDocumentsGpList(report.id);
+      }
       this.$router.push("/reports_history");
     },
   },

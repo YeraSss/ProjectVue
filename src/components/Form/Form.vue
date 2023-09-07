@@ -97,8 +97,9 @@ export default {
       }
     },
     async fetchOutputReportId() {
-      await axios
-        .post(
+      console.log(this.$store.state.currentEntity)
+      if(this.$store.state.currentEntity=="reportTab"){
+        await axios.post(
           this.$store.state.urlOutList,
           {
             period: this.selectedPeriod,
@@ -128,6 +129,39 @@ export default {
         this.$router.push("/free_form");
       } else {
         this.$router.push("/group_indicators");
+      }
+      }else if(this.$store.state.currentEntity=="documentTab"){
+        await axios.post(
+          this.$store.state.urlDocumentsOutList,
+          { doc_name: "Name of document",
+            period: this.selectedPeriod,
+            year: this.selectedYear,
+            quarter: this.selectedQuarter || null,
+            month: this.selectedMonth || null,
+            status: "Черновик",
+            document_id: this.$store.state.currentReportId,
+          },
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data.output_report_id)
+          this.$store.commit(
+            "setOutputReportId",
+            response.data.output_report_id
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      if (this.$store.state.groupIndicators.length === 1) {
+        this.$router.push("/free_form");
+      } else {
+        this.$router.push("/group_doc_indicators");
+      }
       }
     },
   },

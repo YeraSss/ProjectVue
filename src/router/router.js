@@ -4,7 +4,9 @@ import MainPage from "@/pages/MainPage.vue";
 import ReportHistoryPage from "@/pages/ReportHistoryPage.vue";
 import FormPage from "@/pages/FormPage.vue";
 import GroupIndicatorsPage from "@/pages/GroupIndicatorsPage.vue";
+import GroupDocIndicatorsPage from "@/pages/GroupDocIndicatorsPage.vue";
 import FilledTablesPage from "@/pages/FilledTablesPage.vue";
+import FilledDocTablesPage from "@/pages/FilledDocTablesPage.vue";
 import FreeFormPage from "@/pages/FreeFormPage.vue";
 import FilledFreeFormPage from "@/pages/FilledFreeFormPage.vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -35,6 +37,11 @@ const routes = [
         path: "group_indicators",
       },
       {
+        name: "GroupDocIndicators",
+        component: GroupDocIndicatorsPage,
+        path: "group_doc_indicators",
+      },
+      {
         name: "FreeForm",
         component: FreeFormPage,
         path: "free_form",
@@ -43,6 +50,11 @@ const routes = [
         name: "FilledTables",
         component: FilledTablesPage,
         path: "filled_tables",
+      },
+      {
+        name: "FilledDocTables",
+        component: FilledDocTablesPage,
+        path: "filled_doc_tables",
       },
       {
         name: "FilledFreeText",
