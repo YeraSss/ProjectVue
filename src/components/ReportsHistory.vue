@@ -36,8 +36,11 @@
                 Просмотреть отчет
               </my-button>
             </td>
-            <td class="button__td">
+            <td class="button__td" v-if="$store.state.currentEntity!='documentTab'">
               <a href="#" @click="downloadHistoryFile(item.id)">Скачать</a>
+            </td>
+            <td class="button__td" v-else>
+              <a href="#">Просмотр</a>
             </td>
           </tr>
         </tbody>

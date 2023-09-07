@@ -157,7 +157,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      if (this.$store.state.groupIndicators.length === 1) {
+      if (this.$store.state.documentsGpList.length === 1) {
         this.$router.push("/free_form");
       } else {
         this.$router.push("/group_doc_indicators");
