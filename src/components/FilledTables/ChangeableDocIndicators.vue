@@ -5,7 +5,7 @@
         @click="
           $router.push('/reports_history');
           clearAll();">Назад</my-button>
-      <h2>Просмотр отчета:3</h2>
+      <h2>Просмотр отчета:</h2>
       <div
         v-for="group_indicator in $store.state.documentsGpList"
         :key="group_indicator.id"
@@ -123,10 +123,10 @@
         );
         await axios
           .patch(
-            this.$store.state.urlToPatchData,
+            this.$store.state.urlDocSaveData,
             {
               update: dataToPost,
-              output_report: {
+              output_document: {
                 status: "Черновик",
                 output_id: this.$store.state.outputReportId,
               },
