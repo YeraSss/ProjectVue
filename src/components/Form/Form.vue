@@ -97,15 +97,15 @@ export default {
       }
     },
     async fetchOutputReportId() {
-      await axios
-        .post(
+      if(this.$store.state.currentEntity=="reportTab"){
+        await axios.post(
           this.$store.state.urlOutList,
           {
-            report_period: this.selectedPeriod,
-            report_year: this.selectedYear,
-            report_quarter: this.selectedQuarter || null,
-            report_month: this.selectedMonth || null,
-            report_status: "Черновик",
+            period: this.selectedPeriod,
+            year: this.selectedYear,
+            quarter: this.selectedQuarter || null,
+            month: this.selectedMonth || null,
+            status: "Черновик",
             report_id: this.$store.state.currentReportId,
           },
           {
@@ -127,6 +127,38 @@ export default {
         this.$router.push("/free_form");
       } else {
         this.$router.push("/group_indicators");
+      }
+      }else if(this.$store.state.currentEntity=="documentTab"){
+        await axios.post(
+          this.$store.state.urlDocumentsOutList,
+          { doc_name: "Name of document",
+            period: this.selectedPeriod,
+            year: this.selectedYear,
+            quarter: this.selectedQuarter || null,
+            month: this.selectedMonth || null,
+            status: "Черновик",
+            document_id: this.$store.state.currentReportId,
+          },
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+            },
+          }
+        )
+        .then((response) => {
+          this.$store.commit(
+            "setOutputReportId",
+            response.data.output_report_id
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      if (this.$store.state.documentsGpList.length === 1) {
+        this.$router.push("/free_form");
+      } else {
+        this.$router.push("/group_doc_indicators");
+      }
       }
     },
   },

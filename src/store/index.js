@@ -22,20 +22,26 @@ export default createStore({
     urlToPatchData: `/api/reports-idc-values/`,
     urlReportsFile: `/api/reports-file/`,
     urlAdmin: `/admin/`,
-    urlFreeFormFile: "/reports-file/",
+    urlFreeFormFile: "/api/reports-file/",
     urlDocumentsList: `/api/documents-list/`,
     urlDocumentsCatList: `/api/documents-cat-list/`,
     urlDocumentsGpList: `/api/documents-gp-list/`,
+    urlDocumentsOutList: `/api/documents-out-list/`,
+    urlDocIndicators: `/api/documents-fld-list/`,
+    urlDocSaveData: `/api/documents-fld-values/`,
+
     categories: [],
     subCategories: [],
     reports: [],
     groupIndicators: [],
     indicators: [],
     reportsOutList: [],
+    documentsGpList: [],
     reportsIdcValues: [],
+    docIdcValues: [],
     responseFromUploadFile: [],
     breadCrumbs: [],
-    isAdmin: false,
+    isAdmin: true,
     currentReportId: null,
     outputReportId: null,
     isFreeText: false,
@@ -74,6 +80,7 @@ export default createStore({
       state.urlDownloadFile = state.base_url + state.urlDownloadFile;
       state.urlUploadFile = state.base_url + state.urlUploadFile;
       state.urlSaveData = state.base_url + state.urlSaveData;
+      state.urlDocSaveData = state.base_url + state.urlDocSaveData;
       state.urlLogin = state.base_url + state.urlLogin;
       state.urlDownloadFromHistory =
       state.base_url + state.urlDownloadFromHistory;
@@ -84,6 +91,8 @@ export default createStore({
       state.urlDocumentsList = state.base_url + state.urlDocumentsList;
       state.urlDocumentsCatList = state.base_url + state.urlDocumentsCatList;
       state.urlDocumentsGpList = state.base_url + state.urlDocumentsGpList;
+      state.urlDocumentsOutList = state.base_url + state.urlDocumentsOutList;
+      state.urlDocIndicators = state.base_url + state.urlDocIndicators;
     },
     setCategories(state, newCategories) {
       const categories = newCategories;
@@ -124,8 +133,17 @@ export default createStore({
     setReportsIdcValues(state, newReportsIdcValues) {
       state.reportsIdcValues = [...newReportsIdcValues];
     },
+    setDocIdcValues(state, newDocIdcValues) {
+      state.docIdcValues = [...newDocIdcValues];
+    },
     setCurrentReportId(state, newReportId) {
       state.currentReportId = newReportId;
+    },
+    setCurrentEntity(state, entityType) {
+      state.currentEntity = entityType;
+    },
+    setFullName(state, fullName) {
+      state.FullName = fullName;
     },
     setOutputReportId(state, newVal) {
       state.outputReportId = newVal;
@@ -306,10 +324,36 @@ export default createStore({
         alert("Не удалось получить показатели");
       }
     },
+    async fetchDocIndicators({ commit, state }, id) {
+      try {
+        const response = await axios.get(state.urlDocIndicators, {
+          params: { group: id },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setIndicators", response.data.results);
+      } catch (e) {
+        alert("Не удалось получить показатели");
+      }
+    },
     async fetchReportsOutList({ commit, state }, id) {
       try {
         const response = await axios.get(state.urlOutList, {
           params: { report_id: id },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setReportsOutList", response.data.results);
+      } catch (e) {
+        alert("Ошибка с журналом");
+      }
+    },
+    async fetchDocumentsOutList({ commit, state }, id) {
+      try {
+        const response = await axios.get(state.urlDocumentsOutList, {
+          params: { document_id: id },
           headers: {
             Authorization: state.token,
           },
@@ -329,6 +373,20 @@ export default createStore({
           },
         });
         commit("setReportsIdcValues", response.data);
+      } catch (e) {
+        alert("Не удалось получить файлы");
+      }
+    },
+    async fetchDocGroupIndicatorsByHistory({ commit, state }, id) {
+      commit("setOutputReportId", id);
+      try {
+        const response = await axios.get(state.urlDocSaveData, {
+          params: { output_id: id },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        commit("setDocIdcValues", response.data);
       } catch (e) {
         alert("Не удалось получить файлы");
       }
@@ -362,11 +420,29 @@ export default createStore({
         alert("Ошибка получения списка документов");
       }
     },
-    async fetchDocumentsCatList({ commit, state }) {
+    async fetchDocumentsList123({ state }, id) {
+      try {
+        const response = await axios.get(state.urlDocumentsList, {
+          params:{
+            category_id: id,
+          },
+          headers: {
+            Authorization: state.token,
+          },
+        });
+        return response.data.results;
+      } catch (e) {
+        alert("Ошибка получения списка документов");
+      }
+    },
+    async fetchDocumentsCatList({ commit, state }, id = null) {
       try {
         const response = await axios.get(state.urlDocumentsCatList, {
           headers: {
             Authorization: state.token,
+          },
+          params:{
+            parent_id: id,
           },
         });
         commit("setDocumentsCatList", response.data.results);
@@ -374,9 +450,27 @@ export default createStore({
         alert("Ошибка получения списка категорий документов");
       }
     },
-    async fetchDocumentsGpList({ commit, state }) {
+    async fetchDocumentsCatList123({ state }, id = null) {
+      try {
+        const response = await axios.get(state.urlDocumentsCatList, {
+          headers: {
+            Authorization: state.token,
+          },
+          params:{
+            parent_id: id,
+          },
+        });
+        return response.data.results;
+      } catch (e) {
+        alert("Ошибка получения списка категорий документов");
+      }
+    },
+    async fetchDocumentsGpList({ commit, state }, id) {
       try {
         const response = await axios.get(state.urlDocumentsGpList, {
+          params: {
+            document_id: id,
+          },
           headers: {
             Authorization: state.token,
           },

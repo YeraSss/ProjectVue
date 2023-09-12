@@ -7,7 +7,7 @@
     class="parent"
     @click="handleItemClick"
     >
-      <v-list-item-content>
+      <v-list-item-content>        
         <v-list-item-title 
         class="parent_short_name">{{ item.short_name }}</v-list-item-title>
         <span class="arrow" :class="{ 'arrow-down': isOpen }"></span>
@@ -18,6 +18,7 @@
       v-for="childItem in children"
       :key="childItem.id"
       :item="childItem"
+      :type="type"
       />
     </div>
     <div class="report-list">
@@ -40,13 +41,15 @@ export default {
       type: Object,
       required: true,
     },
+    type: {
+      String,
+    }
   },
   data() {
     return {
       isOpen: false,
       children: [],
       reportsList: [],
-      isExpanded: false,
         };
   },
   methods: {
@@ -55,17 +58,38 @@ export default {
       "fetchElements",
       "fetchReportsOutList",
       "fetchGroupIndicators",
-      "fetchDocumentsList",
+      "fetchDocumentsList123",
+      "fetchDocumentsCatList123",
+      "fetchDocumentsOutList",
+      "fetchDocumentsGpList"
     ]),
     async handleItemClick() {
       if (this.item.children) {
-        const categoryWithChildren = await this.fetchCategoriesWithChildren(this.item.id);
-        this.children = categoryWithChildren;
+        if(this.type=="reportTab"){
+          const categoryWithChildren = await this.fetchCategoriesWithChildren(this.item.id);
+          this.children = categoryWithChildren;
+        } else if (this.type=="documentTab"){
+          const docCategoryList = await this.fetchDocumentsCatList123(this.item.id);
+          this.children = docCategoryList;
+        }
       }
       if (this.item.reports) {
         const elementsList = await this.fetchElements(this.item.id);
+        for (let i in elementsList){
+          elementsList[i].short_name = elementsList[i].naming.short_name
+          elementsList[i].full_name = elementsList[i].naming.full_name
+        }
         this.reportsList = elementsList;
       }
+      if (this.item.document) {
+        const docList = await this.fetchDocumentsList123(this.item.id);
+        for (let i in docList){
+          docList[i].short_name = docList[i].naming.short_name
+          docList[i].full_name = docList[i].naming.full_name
+        }
+        this.reportsList = docList;
+      }
+      
       this.isOpen = !this.isOpen;
       if (this.isOpen === false){
         this.children = true;
@@ -75,9 +99,16 @@ export default {
     getMainPage(report) {
       report.clicked = true;
       this.$store.commit("setCurrentReportId", report.id);
+      this.$store.commit("setFullName", report.full_name);
       this.$store.commit("setBreadCrumbs", report);
-      this.fetchReportsOutList(report.id);
-      this.fetchGroupIndicators(report.id);
+      this.$store.commit("setCurrentEntity", this.type);
+      if(this.type=="reportTab"){
+        this.fetchReportsOutList(report.id);
+        this.fetchGroupIndicators(report.id);
+      }else if(this.type=="documentTab"){
+        this.fetchDocumentsOutList(report.id);
+        this.fetchDocumentsGpList(report.id);
+      }
       this.$router.push("/reports_history");
     },
   },

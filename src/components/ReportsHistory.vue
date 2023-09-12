@@ -1,7 +1,7 @@
 <template>
   <div class="reports__history">
     <div class="history__title">
-      <h2>Журнал отчетов:</h2>
+      <h2>Журнал отчетов</h2>
     </div>
     <div>
       <table class="report__table">
@@ -21,27 +21,26 @@
         </thead>
         <tbody>
           <tr v-for="item in $store.state.reportsOutList" :key="item.id">
-            <td>{{ item.org }}</td>
+            <td>{{ item.organization }}</td>
             <td>{{ item.date_time }}</td>
             <td>{{ item.author }}</td>
-            <td>{{ item.report_period }}</td>
-            <td>{{ item.report_year }}</td>
-            <td>{{ item.report_quarter }}</td>
-            <td>{{ item.report_month }}</td>
-            <td>{{ item.report_status }}</td>
+            <td>{{ item.period }}</td>
+            <td>{{ item.year }}</td>
+            <td>{{ item.quarter }}</td>
+            <td>{{ item.month }}</td>
+            <td>{{ item.status }}</td>
             <td>
-              <my-button
-                class="view__btn"
-                @click="
-                  fetchGroupIndicatorsByHistory(item.id);
-                  toggleTableByStatus(item.report_status);
-                "
-              >
+              <my-button class="view__btn"
+                @click="getHistory(item.id);
+                toggleTableByStatus(item.status);">
                 Просмотреть отчет
               </my-button>
             </td>
-            <td class="button__td">
+            <td class="button__td" v-if="$store.state.currentEntity!='documentTab'">
               <a href="#" @click="downloadHistoryFile(item.id)">Скачать</a>
+            </td>
+            <td class="button__td" v-else>
+              <a href="#">Просмотр</a>
             </td>
           </tr>
         </tbody>
@@ -54,13 +53,20 @@
 </template>
 
 <script>
+import { mdiConsoleNetwork } from "@mdi/js";
 import axios from "axios";
 import { mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions({
       fetchGroupIndicatorsByHistory: "fetchGroupIndicatorsByHistory",
+      fetchDocGroupIndicatorsByHistory: "fetchDocGroupIndicatorsByHistory"
     }),
+    getHistory(id){
+      this.fetchDocGroupIndicatorsByHistory(id)
+      this.fetchGroupIndicatorsByHistory(id)
+      
+    },
     toggleTableByStatus(status) {
       if (status === "Черновик") {
         this.$store.commit("setIsChangable", true);
@@ -72,9 +78,14 @@ export default {
       } else {
         this.$store.commit("setIsFreeText", false);
       }
-
-      if (this.$store.state.groupIndicators.length > 1) {
+      if(this.$store.state.currentEntity == "documentTab"){
+        this.$router.push("/filled_doc_tables")
+      } else if(this.$store.state.currentEntity == "reportTab"){
+        if (this.$store.state.groupIndicators.length > 1) {
         this.$router.push("/filled_tables");
+      } else {
+        this.$router.push("/filled_freeform");
+      }
       }
     },
     async downloadHistoryFile(id) {

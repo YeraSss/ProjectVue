@@ -1,5 +1,5 @@
 <template>
-  <h1>{{ title }}</h1>
+  <h1>{{ this.$store.state.FullName}}</h1>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Информация по среднемесячной заработной плате работников",
+      default: "this.$store.state.fullName",
     },
   },
 };
