@@ -169,7 +169,6 @@
         }
       },
       isTableVisible(groupId) {
-        console.log(groupId)
         return this.openTables.includes(groupId);
       },
       getInputValue(indicatorId) {
@@ -250,7 +249,7 @@
         return "ok"
       }else{
       await axios.delete(
-        this.$store.state.urlOutList,{
+        this.$store.state.urlDocumentsOutList,{
           headers: {
             Authorization: this.$store.state.token,
           },
@@ -259,7 +258,7 @@
           }
         },
       ).then((response) => {
-        console.log(response)
+        console.log(response.data.msg)
       }).catch((error) => {
         console.log(error)
       })}

@@ -97,7 +97,6 @@ export default {
       }
     },
     async fetchOutputReportId() {
-      console.log(this.$store.state.currentEntity)
       if(this.$store.state.currentEntity=="reportTab"){
         await axios.post(
           this.$store.state.urlOutList,
@@ -116,7 +115,6 @@ export default {
           }
         )
         .then((response) => {
-          console.log(response.data.output_report_id)
           this.$store.commit(
             "setOutputReportId",
             response.data.output_report_id
@@ -148,7 +146,6 @@ export default {
           }
         )
         .then((response) => {
-          console.log(response.data.output_report_id)
           this.$store.commit(
             "setOutputReportId",
             response.data.output_report_id

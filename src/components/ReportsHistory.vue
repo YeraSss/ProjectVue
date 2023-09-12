@@ -68,7 +68,6 @@ export default {
       
     },
     toggleTableByStatus(status) {
-      console.log(this.$store.state.currentEntity)
       if (status === "Черновик") {
         this.$store.commit("setIsChangable", true);
       } else {

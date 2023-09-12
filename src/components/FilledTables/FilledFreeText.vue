@@ -62,15 +62,8 @@ export default {
           Authorization: this.$store.state.token,
         }
       })
-      console.log(values)
       this.inputValues = JSON.parse(values["data"][0]["indicator_value"])
       this.inputText = values["data"][0]["indicator_text"]
-      
-      /* this.$store.state.reportsIdcValues.forEach((item) => { // urlReportsIdcValues
-        this.inputValues = JSON.parse(item.indicator_value);
-        console.log(item.indicator_value)
-        this.inputText = item.indicator_text
-      }); */
     },
   },
 };

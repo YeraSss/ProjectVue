@@ -65,7 +65,6 @@ export default {
     }),
     setIndicatorId(){
       this.fetchIndicators(this.$store.state.groupIndicators[0].id);
-      console.log("done id")
     },
     openFilePicker() {
       this.$refs.fileInput.$el.click();
@@ -85,8 +84,8 @@ export default {
             Authorization: this.$store.state.token,
           },
         })
-        .then((response) => {
-          console.log(response);
+        .then(() => {
+          alert("Файл успешно загружен!");
         })
         .catch((error) => {
           console.log(error);
@@ -116,8 +115,8 @@ export default {
             },
           }
         )
-        .then((response) => {
-          console.log(response);
+        .then(() => {
+          alert("Текст успешно загружен!");
         })
         .catch((error) => {
           console.log(error);
@@ -138,7 +137,7 @@ export default {
         }
       },
     ).then((response) => {
-      console.log(response)
+      console.log(response.data.msg)
     }).catch((error) => {
       console.log(error)
     })}

@@ -271,8 +271,6 @@ export default {
       this.inputValues[indicatorId] = value;
     },
   async deleteOutput(){
-    console.log(this.inputValues)
-    console.log(Object.keys(this.inputValues).length)
     if(Object.keys(this.inputValues).length){
       this.inputValues = {};
       return "ok"
@@ -287,7 +285,7 @@ export default {
         }
       },
     ).then((response) => {
-      console.log(response)
+      console.log(response.data.msg)
     }).catch((error) => {
       console.log(error)
     })}

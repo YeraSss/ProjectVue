@@ -97,7 +97,6 @@ export default {
       }
     },
     getMainPage(report) {
-      console.log(this.type)
       report.clicked = true;
       this.$store.commit("setCurrentReportId", report.id);
       this.$store.commit("setFullName", report.full_name);
