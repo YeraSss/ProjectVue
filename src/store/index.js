@@ -22,7 +22,6 @@ export default createStore({
     urlToPatchData: `/api/reports-idc-values/`,
     urlReportsFile: `/api/reports-file/`,
     urlAdmin: `/admin/`,
-    urlFreeFormFile: "/api/reports-file/",
     urlDocumentsList: `/api/documents-list/`,
     urlDocumentsCatList: `/api/documents-cat-list/`,
     urlDocumentsGpList: `/api/documents-gp-list/`,
@@ -83,7 +82,7 @@ export default createStore({
       state.urlDocSaveData = state.base_url + state.urlDocSaveData;
       state.urlLogin = state.base_url + state.urlLogin;
       state.urlDownloadFromHistory =
-      state.base_url + state.urlDownloadFromHistory;
+        state.base_url + state.urlDownloadFromHistory;
       state.urlToPatchData = state.base_url + state.urlToPatchData;
       state.urlAdmin = state.base_url + state.urlAdmin;
       state.urlFreeFormFile = state.base_url + state.urlFreeFormFile;
@@ -236,7 +235,7 @@ export default createStore({
       const documentsList = newDocumentsList;
       state.documentsList = documentsList.map((report) => ({
         ...report
-      })) 
+      }))
     },
     setDocumentsCatList(state, newDocumentsCatList) {
       const docCategories = newDocumentsCatList;
@@ -408,7 +407,7 @@ export default createStore({
     async fetchDocumentsList({ commit, state }, id) {
       try {
         const response = await axios.get(state.urlDocumentsList, {
-          params:{
+          params: {
             category_id: id,
           },
           headers: {
@@ -423,7 +422,7 @@ export default createStore({
     async fetchDocumentsList123({ state }, id) {
       try {
         const response = await axios.get(state.urlDocumentsList, {
-          params:{
+          params: {
             category_id: id,
           },
           headers: {
@@ -441,7 +440,7 @@ export default createStore({
           headers: {
             Authorization: state.token,
           },
-          params:{
+          params: {
             parent_id: id,
           },
         });
@@ -456,7 +455,7 @@ export default createStore({
           headers: {
             Authorization: state.token,
           },
-          params:{
+          params: {
             parent_id: id,
           },
         });
@@ -481,5 +480,5 @@ export default createStore({
       }
     },
   },
-  },
+},
 );

@@ -13,13 +13,11 @@
 <script>
 import NavBar from "@/components/Navbar/NavBar.vue";
 import Header from "@/components/Header.vue";
-import FreeForm from "@/components/FreeForm/FreeForm.vue";
 import { mapActions } from "vuex";
 export default {
   components: {
     Header,
     NavBar,
-    FreeForm,
   },
   methods: {
     ...mapActions({
@@ -42,12 +40,14 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .main__page__content {
   width: 100%;
   min-height: 100%;
   max-height: max-content;
   display: flex;
 }
+
 .content {
   width: 80%;
 }
