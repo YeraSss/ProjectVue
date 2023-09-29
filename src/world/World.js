@@ -3,6 +3,7 @@ import { createLights } from "./components/lights.js";
 import { createScene } from "./components/scene.js";
 import { createControls } from "./systems/controls.js";
 import { createRenderer } from "./systems/renderer.js";
+import { Loop } from "./systems/Loop.js";
 import { Resizer } from "./systems/Resizer.js";
 import { loadBuilding } from "./systems/building.js";
 
@@ -12,6 +13,7 @@ let camera;
 let renderer;
 let scene;
 let controls;
+let loop;
 
 class World {
   constructor(container) {
@@ -19,14 +21,13 @@ class World {
     camera = createCamera();
     scene = createScene();
     renderer = createRenderer();
-    
- 
+    loop = new Loop(camera, scene, renderer);
+    container.append( renderer.domElement );
     controls = createControls(camera, renderer.domElement);
 
     // Light Instance, with optional light helper
     const { ambientLight, mainLight } = createLights();
-
-   
+    loop.updatables.push(controls);
     scene.add(ambientLight, mainLight);
 
     // Responsive handler
@@ -87,6 +88,13 @@ class World {
     renderer.render(scene, camera);
   }
 
+  start() {
+    loop.start();
+  }
+
+  stop() {
+    loop.stop();
+  }
 }
 
 export { World };

@@ -3,8 +3,12 @@
     <Header />
     <div class="main__page__content">
       <NavBar />
-      <div class="content" id="scene-container">
+      <div class="content" >
         <router-view />
+        <div id="scene-container">
+          <scene/>
+        </div>
+      
       </div>
     </div>
   </div>
@@ -13,6 +17,7 @@
 <script>
 import NavBar from "@/components/Navbar/NavBar.vue";
 import Header from "@/components/Header.vue";
+import scene from "./scene.vue";
 import { mapActions } from "vuex";
 export default {
   components: {
@@ -49,6 +54,10 @@ export default {
 }
 
 .content {
+  width: 80%;
+}
+
+.scene {
   width: 80%;
 }
 </style>
