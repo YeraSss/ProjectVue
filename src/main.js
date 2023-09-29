@@ -3,6 +3,7 @@ import App from "@/App.vue";
 import components from "@/components/UI";
 import router from "@/router/router";
 import store from "@/store";
+import { World } from "./world/World.js";
 import vuexLocalStoragePlugin from "@/plugins/vuexLocalStorage";
 import { createVuetify } from "vuetify/lib/framework.mjs";
 import * as componentsVuetify from "vuetify/components";
@@ -25,6 +26,8 @@ const vuetify = createVuetify({
   directives,
 });
 
+
+
 const app = createApp(App);
 
 const isAuthLocalStorage = localStorage.getItem("isAuth");
@@ -44,4 +47,22 @@ app.use(router);
 app.use(store);
 app.use(vuetify);
 vuexLocalStoragePlugin(store);
+
+
 app.mount("#app");
+
+async function main() {
+  // Get a reference to the container element
+  const container = document.querySelector('#scene-container');
+
+  // create a new world
+  const world = new World(container);
+
+  // complete async tasks
+  await world.init();
+
+  // start the animation loop
+ 
+}
+
+main()

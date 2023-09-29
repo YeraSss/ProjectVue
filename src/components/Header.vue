@@ -4,7 +4,7 @@
       <img src="../assets/KMG_icon.svg" alt="KMG Logo" />
     </div>
     <div class="title">
-      <h1>Система ввода информации</h1>
+      <h1>Обзор здания</h1>
     </div>
     <div class="btns">
       <my-button @click="redirectToExternalSite" v-if="$store.state.isAdmin"

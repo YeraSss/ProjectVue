@@ -3,7 +3,7 @@
     <Header />
     <div class="main__page__content">
       <NavBar />
-      <div class="content">
+      <div class="content" id="scene-container">
         <router-view />
       </div>
     </div>
